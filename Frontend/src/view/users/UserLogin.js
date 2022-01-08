@@ -50,7 +50,7 @@ const  UserLogin=() =>{
             console.log(error);
             });
     }
-    useEffect(()=>{},[])
+
     return (
         <>
 <Helmet>
@@ -129,6 +129,7 @@ const  UserLogin=() =>{
                     <div className="social-login-separator"><span>or</span></div>
               <div className="social-login-buttons">
                  <Link className="btn btn-success btn-block" to="/register">Create Account</Link>
+                 <Link className="btn btn-danger btn-block" to="/">Home</Link>
               </div>
                    
                   </div>

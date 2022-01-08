@@ -129,7 +129,7 @@ const  Data=() =>{
   // Change Status location start
   const changeStatus=(e)=>{
     e.preventDefault();
-    alert(ChangeStatus)
+   
    var formdata = new FormData();
    formdata.append("status",ChangeStatus);
    formdata.append("tab",'locationstatus');

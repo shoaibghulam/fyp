@@ -1,3 +1,4 @@
+import React,{useEffect,useState} from 'react';
 import './App.css';
 import Main  from './layout/dashboard/Main';
 import Login from './view/dashboard/Login';
@@ -13,14 +14,24 @@ import Panel from './layout/users/Panel';
 import UserHome from './view/users/UserHome';
 import AgencySettings from './view/users/AgencySettings';
 import Home from './view/home/Home';
+import Loader from './components/Loader';
 
 
 // import Footer from './components/Footer';
 
 function App() {
+  const [loader,setLoader]=useState(true);
+  useEffect(()=>{
+    setTimeout(()=>{
+      setLoader(false)
+
+    },3000)
+  },[])
+//  alert(location.coordinates.lat)
+ 
   return (
     <Router>
-  
+     {loader ? <Loader /> :null }  
     <Switch>
     <Route exact path='/'>
       <Home />

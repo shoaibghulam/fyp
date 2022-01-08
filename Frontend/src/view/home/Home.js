@@ -78,7 +78,7 @@ const showBox=()=>{
 
     return(
   <>
-{loader ? <Loader /> :null }
+{/* {loader ? <Loader /> :null } */}
 
  <Homenav shwoBox={showBox}/>
 
@@ -93,7 +93,7 @@ const showBox=()=>{
         
           defaultCenter={location.coordinates}
          
-          defaultZoom={15}
+          defaultZoom={13}
           bootstrapURLKeys={{
             key: 'AIzaSyAbnkyiEEVFi1tGsTNc1TmWpRmLbFHSqAs',
             language: 'en',

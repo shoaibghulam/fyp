@@ -4,6 +4,7 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import url from '../../baseUrl';
 import {BiDotsVertical} from 'react-icons/bi';
+import Loader from '../../components/Loader';
 
 const  Admin=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
@@ -12,11 +13,12 @@ const  Admin=() =>{
   const[dataPk,setDataPk]=useState('')
   const [UserPk,setUserPk]=useState('')
   const [userData,setUserData]=useState([])
-
+  const[Description,setDescription]=useState('')
+  const [loader,setLoader]=useState(true);
     // Change Status location start
     const changeStatus=(e)=>{
       e.preventDefault();
-      alert(dataPk)
+  
      var formdata = new FormData();
      formdata.append("status",ChangeStatus);
      formdata.append("tab",'locationstatus');
@@ -175,12 +177,17 @@ const  Admin=() =>{
     }
     // effect start
     useEffect(()=>{
+    
+      setTimeout(()=>{
+        setLoader(false)
+
+      },3000)
       allData();
       allUserData();
     },[data.length])
     return (
         <>
-             
+         {/* {loader ? <Loader /> :null }     */}
         {/* shoaib BEGIN: Content*/}
         <div className="app-content content ">
           <div className="content-overlay" />
@@ -328,7 +335,7 @@ const  Admin=() =>{
 
  <td>{e.Longitude}</td>
  <td>{e.ContactNo}</td>
- <td> {e.Description}</td>
+ <td> <a href="javascript:void(0)" onClick={()=>setDescription(e.Description)} data-toggle="modal" data-target="#modal-desc">View Description</a></td>
  <td>{e.Address}</td>
  <td>{e.ModalId['ModalTitle']}</td>
  <td>{e.UserId['AgencyName']}</td>
@@ -542,7 +549,24 @@ const  Admin=() =>{
         </div>
       </div>
       {/* Modal to edit new user Ends*/}
-        
+           {/* Modal to edit new user starts*/}
+           <div className="modal modal-slide-in new-user-modal fade" id="modal-desc">
+        <div className="modal-dialog ">
+            
+          <form className="add-new-user modal-content pt-0" >
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">Description </h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+          <div className="mt-4"  dangerouslySetInnerHTML={{__html:Description}}>
+
+          </div>
+              
+            </div>
+          </form>
+        </div>
+      </div>
         
         </>
     )

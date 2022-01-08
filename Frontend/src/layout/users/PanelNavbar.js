@@ -28,9 +28,7 @@ export default function Navbar() {
               </ul>
             </div>
             <ul className="nav navbar-nav align-items-center ml-auto">
-              <li className="nav-item dropdown dropdown-language"><a className="nav-link dropdown-toggle" id="dropdown-flag" href="javascript:void(0);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="flag-icon flag-icon-us" /><span className="selected-language">English</span></a>
-                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-flag"><a className="dropdown-item" href="javascript:void(0);" data-language="en"><i className="flag-icon flag-icon-us" /> English</a><a className="dropdown-item" href="javascript:void(0);" data-language="fr"><i className="flag-icon flag-icon-fr" /> French</a><a className="dropdown-item" href="javascript:void(0);" data-language="de"><i className="flag-icon flag-icon-de" /> German</a><a className="dropdown-item" href="javascript:void(0);" data-language="pt"><i className="flag-icon flag-icon-pt" /> Portuguese</a></div>
-              </li>
+        
               <li className="nav-item d-none d-lg-block"><a className="nav-link nav-link-style"><i className="ficon" data-feather="sun" /></a></li>
            
          

@@ -1,9 +1,10 @@
 import React,{useState,useEffect} from 'react'
 import {Helmet} from "react-helmet";
-import { useHistory} from 'react-router-dom';
+import { useHistory,Link} from 'react-router-dom';
 import axios from 'axios';
 import url from '../../baseUrl';
 import swal from 'sweetalert';
+
 
 const  Register=() =>{
    const history = useHistory();
@@ -130,7 +131,9 @@ const  Register=() =>{
                       </div>
                    
                      
-                      <button type='submit' className="btn btn-primary btn-block">Sign in</button>
+                      <button type='submit' className="btn btn-primary btn-block">Register</button>
+                      <Link className="btn btn-success btn-block" to="/register">Create Account</Link>
+                 <Link className="btn btn-danger btn-block" to="/">Home</Link>
                     </form>
                    
                   
