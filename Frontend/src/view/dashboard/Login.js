@@ -37,7 +37,7 @@ const  Login=() =>{
         
               swal("successfully!", data.message, "success");
 
-              history.push("/")
+              history.push("/admin")
             }
             else {
           

@@ -22,7 +22,7 @@ class UserModel(models.Model):
     Password= models.TextField(max_length=1500)
     ContactNo=models.CharField(max_length=250)
     Address =models.TextField(max_length=550)
-    Status= models.BooleanField(default=False) 
+    Status= models.CharField(max_length=100,default="pending") 
     RegistrationDate =models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.AgencyName
@@ -45,6 +45,7 @@ class LocationModel(models.Model):
     Description=models.TextField(max_length=2500)
     Address =models.CharField(max_length=250)
     WebsiteLink =models.CharField(max_length=250)
+    Status= models.CharField(max_length=100,default="pending") 
     ModalId=models.ForeignKey(DataModels, on_delete=models.CASCADE) 
     UserId=models.ForeignKey(UserModel, on_delete=models.CASCADE) 
     def __str__(self):

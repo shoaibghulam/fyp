@@ -1,6 +1,6 @@
 import React from 'react'
 import {  Route,Redirect } from 'react-router-dom';
-import Home from '../../view/dashboard/Home';
+
 import Model from '../../view/dashboard/Model';
 import Navbar from './Navbar';
 export default function Main(props) {

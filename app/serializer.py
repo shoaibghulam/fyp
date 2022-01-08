@@ -26,6 +26,7 @@ class LocationModelSer(serializers.ModelSerializer):
     class Meta:
         model = LocationModel
         fields = '__all__'
+    
 
 
 class WebisteModalSer(serializers.ModelSerializer):

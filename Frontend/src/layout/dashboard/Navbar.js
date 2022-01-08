@@ -160,7 +160,7 @@ export default function Navbar() {
           <div className="main-menu-content">
             <ul className="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
               <li className="nav-item">
-                <Link   to="/" className="d-flex align-items-center"><i data-feather="home" /><span className="menu-title text-truncate" >Dashboards</span>
+                <Link   to="/admin" className="d-flex align-items-center"><i data-feather="home" /><span className="menu-title text-truncate" >Dashboards</span>
               </Link>
             
               </li>

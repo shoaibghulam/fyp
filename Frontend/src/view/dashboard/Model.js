@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useState,useRef} from 'react'
 import swal from 'sweetalert';
 import axios from 'axios';
 import url from '../../baseUrl';
@@ -7,9 +7,12 @@ import $ from 'jquery';
 const  Model=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
   const [data,setData]=useState([]);
+  const [modalPk,setModalPk]=useState();
   const [modalTitle,setModalTitle]=useState('');
   const [modalDescription,setModalDescription]=useState('');
   const [modalThumbnail,setModalThumbnail]=useState();
+
+  // add Modal Api Start
   const addModal=(e)=>{
    
     e.preventDefault();
@@ -49,6 +52,86 @@ const  Model=() =>{
       
     });
   }
+  // add Modal APi End
+  // Edit Modal Api Start
+  const editModal=(e)=>{
+   
+    e.preventDefault();
+    var formdata = new FormData();
+
+  formdata.append("ModalTitle",modalTitle);
+  formdata.append("ModalDescription",modalDescription);
+  
+  formdata.append("ModalThumbnail", modalThumbnail);
+
+  axios({
+    method: 'PUT',
+    url: `${url.url}/api/models/${modalPk}`,
+    data: formdata,
+    headers: {
+
+      Authorization: token,
+
+    },
+  })
+    .then((response) => {
+    var data= response.data;
+    if(data.status==true){
+      allData();
+    window.$('.close').click()
+    e.target.reset();
+    swal("successfully!", data.message, "success");
+
+
+  }
+  else {
+
+    swal("Incorrect!", data.message, "warning");
+  
+  
+  }
+    }, (error) => {
+      console.log(error);
+      
+    });
+  }
+  // Edit Modal APi End
+  // Delete Modal Modal Api Start
+  const deleteModal=(e)=>{
+   
+
+  axios({
+    method: 'DELETE',
+    url: `${url.url}/api/models/${e}`,
+  
+    headers: {
+
+      Authorization: token,
+
+    },
+  })
+    .then((response) => {
+    var data= response.data;
+    if(data.status==true){
+      allData();
+ 
+    swal("successfully!", data.message, "success");
+
+
+  }
+  else {
+
+    swal("Incorrect!", data.message, "warning");
+  
+  
+  }
+    }, (error) => {
+      console.log(error);
+      
+    });
+  }
+  // delet Modal APi End
+
   const allData=()=>{
     axios({
       method: 'GET',
@@ -104,7 +187,7 @@ const  Model=() =>{
                   <h2 className="content-header-title float-left mb-0">Modal Data</h2>
                   <div className="breadcrumb-wrapper">
                     <ol className="breadcrumb">
-                      <li className="breadcrumb-item"><a href="index.html">Home</a>
+                      <li className="breadcrumb-item"><a href="javascript:void(0)">Home</a>
                       </li>
                       <li className="breadcrumb-item active">Modal Data
                       </li>
@@ -155,11 +238,19 @@ const  Model=() =>{
      <BiDotsVertical size={35} />
      </button>
      <div className="dropdown-menu">
-       <a className="dropdown-item" href="javascript:void(0);">
+       <a className="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#modals-slide-edit"
+       onClick={()=>{
+        setModalTitle(e.ModalTitle)
+        setModalDescription(e.ModalDescription)
+        setModalThumbnail(null)
+        setModalPk(e.ModalId)
+      
+       }}
+       >
          <i data-feather="edit-2" className="mr-50" />
          <span>Edit</span>
        </a>
-       <a className="dropdown-item" href="javascript:void(0);">
+       <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteModal(e.ModalId)}>
          <i data-feather="trash" className="mr-50" />
          <span>Delete</span>
        </a>
@@ -222,6 +313,38 @@ const  Model=() =>{
         </div>
       </div>
       {/* Modal to add new user Ends*/}
+          {/* Modal to edit new user starts*/}
+          <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-edit">
+        <div className="modal-dialog">
+          <form className="add-new-user modal-content pt-0" onSubmit={editModal}>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">Edit Model </h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+              <div className="form-group">
+                <label className="form-label" htmlFor="basic-icon-default-fullname">Title</label>
+                <input type="text" className="form-control dt-full-name" placeholder="John Doe" onChange={(e)=>setModalTitle(e.target.value)} value={modalTitle}/>
+              </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="basic-icon-default-uname">Description</label>
+                <textarea id="basic-icon-default-uname" className="form-control dt-uname" placeholder="Description Here" onChange={(e)=>setModalDescription(e.target.value)} value={modalDescription}/>
+              </div>
+              <div className="form-group">
+                <label className="form-label" htmlFor="basic-icon-default-email">Thumbnail</label>
+                
+                <input type="file" className="form-control dt-email" onChange={(e)=>setModalThumbnail(e.target.files[0])}/>
+                <small className="form-text text-muted"> You can use jpg and png </small>
+              </div>
+          
+             
+              <button type="submit" className="btn btn-primary mr-1 data-submit">Submit</button>
+              <button type="reset" className="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {/* Modal to edit new user Ends*/}
         
         </>
     )

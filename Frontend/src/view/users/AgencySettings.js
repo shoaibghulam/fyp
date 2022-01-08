@@ -8,10 +8,91 @@ const  AgencySettings=() =>{
   let token = `Bearer ` + localStorage.getItem("usertoken")
   const [data,setData]=useState([]);
   const [userData,setUserData]=useState([]);
+ const updateGenral=(e)=>{
+   e.preventDefault();
+   var formdata = new FormData();
+
+   formdata.append("tab",'general');
+   formdata.append("FullName",e.target[0].value);
+   formdata.append("Email",e.target[1].value);
+   formdata.append("ContactNo", e.target[2].value);
+ 
+   axios({
+     method: 'PUT',
+     url: `${url.url}/api/agencysettings`,
+     data: formdata,
+     headers: {
+ 
+       Authorization: token,
+ 
+     },
+   })
+     .then((response) => {
+     var data= response.data;
+     if(data.status==true){
+       allData();
+     window.$('.close').click()
+     e.target.reset();
+     swal("successfully!", data.message, "success");
+ 
+ 
+   }
+   else {
+ 
+     swal("Incorrect!", data.message, "warning");
+   
+   
+   }
+     }, (error) => {
+       console.log(error);
+       
+     });
+ }
+ const updatePassword=(e)=>{
+
+   e.preventDefault();
+   var formdata = new FormData();
+
+   formdata.append("tab",'changepassword');
+   formdata.append("OldPassword",e.target[0].value);
+   formdata.append("NewPassowrd",e.target[1].value);
+  
+ 
+   axios({
+     method: 'PUT',
+     url: `${url.url}/api/agencysettings`,
+     data: formdata,
+     headers: {
+ 
+       Authorization: token,
+ 
+     },
+   })
+     .then((response) => {
+     var data= response.data;
+     if(data.status==true){
+       allData();
+     window.$('.close').click()
+     e.target.reset();
+     swal("successfully!", data.message, "success");
+ 
+ 
+   }
+   else {
+ 
+     swal("Incorrect!", data.message, "warning");
+   
+   
+   }
+     }, (error) => {
+       console.log(error);
+       
+     });
+ }
   const allData=()=>{
     axios({
       method: 'GET',
-      url: `${url.url}/api/login`,
+      url: `${url.url}/api/agencysettings`,
       
       headers: {
   
@@ -66,7 +147,8 @@ const  AgencySettings=() =>{
                       </li>
                       <li className="breadcrumb-item"><a href="#">Settings</a>
                       </li>
-                   
+                      <li className="breadcrumb-item active"> Website Settings
+                      </li>
                     </ol>
                   </div>
                 </div>
@@ -95,8 +177,9 @@ const  AgencySettings=() =>{
                         <span className="font-weight-bold">Change Password</span>
                       </a>
                     </li>
-                    {/* information */}
-             
+                  
+                    {/* social */}
+                   
                   
                   </ul>
                 </div>
@@ -109,34 +192,19 @@ const  AgencySettings=() =>{
                         {/* general tab */}
                         <div role="tabpanel" className="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
                         
-                          {/* <div className="media">
-                            <a href="javascript:void(0);" className="mr-25">
-                              <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" id="account-upload-img" className="rounded mr-50" alt="profile image" height={80} width={80} />
-                            </a>
-                          
-                            <div className="media-body mt-75 ml-1">
-                              <label htmlFor="account-upload" className="btn btn-sm btn-primary mb-75 mr-75">Upload</label>
-                              <input type="file" id="account-upload" hidden accept="image/*" />
-                              <button className="btn btn-sm btn-outline-secondary mb-75">Reset</button>
-                              <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
-                            </div>
-                           
-                          </div> */}
-                          {/*/ header media */}
                           {/* form */}
-                          <form className="validate-form mt-2">
+                          <form className="validate-form mt-2" onSubmit={updateGenral}>
                             <div className="row">
                               <div className="col-12 col-sm-6">
                                 <div className="form-group">
                                   <label htmlFor="account-username">Agency Name</label>
-
-                                  <input type="text" className="form-control" id="account-username" name="username" placeholder="Agency Name" defaultValue={data.AgencyName} />
+                                  <input type="text" className="form-control" id="account-username" name="username" placeholder="FUll Name" defaultValue={data.AgencyName} />
                                 </div>
                               </div>
                               <div className="col-12 col-sm-6">
                                 <div className="form-group">
                                   <label htmlFor="account-name">email</label>
-                                  <input type="email" className="form-control" id="account-name" name="name" placeholder="Email" defaultValue={data.Email} />
+                                  <input type="email" className="form-control" id="account-name" name="name" placeholder="Name" defaultValue={data.Email} />
                                 </div>
                               </div>
                               <div className="col-12 col-sm-12">
@@ -145,21 +213,8 @@ const  AgencySettings=() =>{
                                   <input type="text" className="form-control" placeholder="Contact No" defaultValue={data.ContactNo} />
                                 </div>
                               </div>
-                              <div className="col-12 col-sm-12">
-                                <div className="form-group">
-                                  <label htmlFor="account-e-mail">Address</label>
-                                  <input type="text" className="form-control" placeholder="Contact No" defaultValue={data.Address} />
-                                </div>
-                              </div>
                            
-                              <div className="col-12 mt-75">
-                                <div className="alert alert-warning mb-50" role="alert">
-                                  <h4 className="alert-heading">Your email is not confirmed. Please check your inbox.</h4>
-                                  <div className="alert-body">
-                                    <a href="javascript: void(0);" className="alert-link">Resend confirmation</a>
-                                  </div>
-                                </div>
-                              </div>
+                             {/* shoaib ghulam */}
                               <div className="col-12">
                                 <button type="submit" className="btn btn-primary mt-2 mr-1">Save changes</button>
                                 <button type="reset" className="btn btn-outline-secondary mt-2">Cancel</button>
@@ -172,9 +227,9 @@ const  AgencySettings=() =>{
                         {/* change password */}
                         <div className="tab-pane fade" id="account-vertical-password" role="tabpanel" aria-labelledby="account-pill-password" aria-expanded="false">
                           {/* form */}
-                          <form className="validate-form">
+                          <form className="validate-form" onSubmit={updatePassword}>
                             <div className="row">
-                              <div className="col-12 col-sm-6">
+                              <div className="col-12 col-sm-12">
                                 <div className="form-group">
                                   <label htmlFor="account-old-password">Old Password</label>
                                   <div className="input-group form-password-toggle input-group-merge">
@@ -189,7 +244,7 @@ const  AgencySettings=() =>{
                               </div>
                             </div>
                             <div className="row">
-                              <div className="col-12 col-sm-6">
+                              <div className="col-12 col-sm-12">
                                 <div className="form-group">
                                   <label htmlFor="account-new-password">New Password</label>
                                   <div className="input-group form-password-toggle input-group-merge">
@@ -202,17 +257,7 @@ const  AgencySettings=() =>{
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-retype-new-password">Retype New Password</label>
-                                  <div className="input-group form-password-toggle input-group-merge">
-                                    <input type="password" className="form-control" id="account-retype-new-password" name="confirm-new-password" placeholder="New Password" />
-                                    <div className="input-group-append">
-                                      <div className="input-group-text cursor-pointer"><i data-feather="eye" /></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              
                               <div className="col-12">
                                 <button type="submit" className="btn btn-primary mr-1 mt-1">Save changes</button>
                                 <button type="reset" className="btn btn-outline-secondary mt-1">Cancel</button>
@@ -222,62 +267,10 @@ const  AgencySettings=() =>{
                           {/*/ form */}
                         </div>
                         {/*/ change password */}
+                      
+                        {/*/ information */}
+                     
                        
-                        {/* social */}
-                       
-                        {/*/ social */}
-                        {/* notifications */}
-                        <div className="tab-pane fade" id="account-vertical-notifications" role="tabpanel" aria-labelledby="account-pill-notifications" aria-expanded="false">
-                          <div className="row">
-                            <h6 className="section-label mx-1 mb-2">Activity</h6>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch1" />
-                                <label className="custom-control-label" htmlFor="accountSwitch1">
-                                  Email me when someone comments onmy article
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch2" />
-                                <label className="custom-control-label" htmlFor="accountSwitch2">
-                                  Email me when someone answers on my form
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" id="accountSwitch3" />
-                                <label className="custom-control-label" htmlFor="accountSwitch3">Email me hen someone follows me</label>
-                              </div>
-                            </div>
-                            <h6 className="section-label mx-1 mt-2">Application</h6>
-                            <div className="col-12 mt-1 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch4" />
-                                <label className="custom-control-label" htmlFor="accountSwitch4">News and announcements</label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch6" />
-                                <label className="custom-control-label" htmlFor="accountSwitch6">Weekly product updates</label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-75">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" id="accountSwitch5" />
-                                <label className="custom-control-label" htmlFor="accountSwitch5">Weekly blog digest</label>
-                              </div>
-                            </div>
-                            <div className="col-12">
-                              <button type="submit" className="btn btn-primary mt-2 mr-1">Save changes</button>
-                              <button type="reset" className="btn btn-outline-secondary mt-2">Cancel</button>
-                            </div>
-                          </div>
-                        </div>
-                        {/*/ notifications */}
                       </div>
                     </div>
                   </div>

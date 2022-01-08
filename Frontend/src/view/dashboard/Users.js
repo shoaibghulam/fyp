@@ -6,6 +6,182 @@ import {BiDotsVertical} from 'react-icons/bi';
 const  Model=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
   const [data,setData]=useState([]);
+  const [UserPk,setUserPk]=useState('')
+  const [AgencyName,setAgencyName]=useState('')
+  const [Username,setUsername]=useState('')
+  const [Email,setEmail]=useState('')
+  const [Password,setPassword]=useState('')
+  const [ContactNo,setContactNo]=useState('')
+  const [Address,setAddress]=useState('')
+  const[ChangeStatus,setChangeStatus]=useState('')
+   // add User Api Start
+   const addUser=(e)=>{
+   
+    e.preventDefault();
+    var formdata = new FormData();
+  formdata.append("AgencyName",AgencyName);
+  formdata.append("Username",Username);
+  formdata.append("Email",Email);
+  formdata.append("Password",Password);
+  formdata.append("ContactNo",ContactNo);
+  formdata.append("Address",Address);
+
+
+  axios({
+    method: 'POST',
+    url: `${url.url}/api/register`,
+    data: formdata,
+    headers: {
+
+      Authorization: token,
+
+    },
+  })
+    .then((response) => {
+    var data= response.data;
+    if(data.status==true){
+      allData();
+    window.$('.close').click()
+    e.target.reset();
+    swal("successfully!", data.message, "success");
+
+
+  }
+  else {
+
+    swal("Incorrect!", data.message, "warning");
+  
+  
+  }
+    }, (error) => {
+      console.log(error);
+      
+    });
+  }
+  // add User API End
+   // Update User Api Start
+   const editUser=(e)=>{
+   
+    e.preventDefault();
+    var formdata = new FormData();
+  formdata.append("AgencyName",AgencyName);
+  formdata.append("Username",Username);
+  formdata.append("Email",Email);
+  formdata.append("Password",Password);
+  formdata.append("ContactNo",ContactNo);
+  formdata.append("Address",Address);
+
+
+  axios({
+    method: 'PUT',
+    url: `${url.url}/api/register/${UserPk}`,
+    data: formdata,
+    headers: {
+
+      Authorization: token,
+
+    },
+  })
+    .then((response) => {
+    var data= response.data;
+    if(data.status==true){
+      allData();
+    window.$('.close').click()
+    e.target.reset();
+    swal("successfully!", data.message, "success");
+
+
+  }
+  else {
+
+    swal("Incorrect!", data.message, "warning");
+  
+  
+  }
+    }, (error) => {
+      console.log(error);
+      
+    });
+  }
+  // Update User API End
+  // Delete User Modal Api Start
+  const deleteUser=(e)=>{
+ 
+
+    axios({
+      method: 'DELETE',
+      url: `${url.url}/api/register/${e}`,
+    
+      headers: {
+  
+        Authorization: token,
+  
+      },
+    })
+      .then((response) => {
+      var data= response.data;
+      if(data.status==true){
+        allData();
+   
+      swal("successfully!", data.message, "success");
+  
+  
+    }
+    else {
+  
+      swal("Incorrect!", data.message, "warning");
+    
+    
+    }
+      }, (error) => {
+        console.log(error);
+        
+      });
+    }
+    // delet User APi End
+
+      // Change Status  start
+  const changeStatus=(e)=>{
+    e.preventDefault();
+
+   var formdata = new FormData();
+   formdata.append("status",ChangeStatus);
+   formdata.append("tab",'userstaus');
+  
+ 
+   axios({
+    method: 'PUT',
+    url: `${url.url}/api/locationstatus/${UserPk}`,
+    data: formdata,
+    headers: {
+
+      Authorization: token,
+
+    },
+  })
+    .then((response) => {
+    var data= response.data;
+    if(data.status==true){
+      allData();
+    window.$('.close').click()
+    e.target.reset();
+    swal("successfully!", data.message, "success");
+
+
+  }
+  else {
+
+    swal("Incorrect!", data.message, "warning");
+  
+  
+  }
+    }, (error) => {
+      console.log(error);
+      
+    });
+ 
+  }
+  // change status end
   const allData=()=>{
     axios({
       method: 'GET',
@@ -125,7 +301,9 @@ const  Model=() =>{
     {e.RegistrationDate}
    </td>
    <td>
-     {e.Status ?
+     {e.Status =='pending' ?
+     <span className="badge badge-pill badge-light-info mr-1">Pending</span>
+     : e.Status =='active' ?
      <span className="badge badge-pill badge-light-primary mr-1">Active</span>
      :
      <span className="badge badge-pill badge-light-danger mr-1">Disable</span>
@@ -137,14 +315,34 @@ const  Model=() =>{
          <BiDotsVertical size={35} />
        </button>
        <div className="dropdown-menu">
-         <a className="dropdown-item" href="javascript:void(0);">
+         <a className="dropdown-item" href="javascript:void(0);"
+         data-toggle="modal" data-target="#modals-slide-edit"
+         onClick={()=>{
+          setUserPk(e.UserId)
+          setAgencyName(e.AgencyName)
+          setUsername(e.Username)
+          setEmail(e.Email)
+          setPassword(null)
+          setContactNo(e.ContactNo)
+          setAddress(e.Address)
+         }}
+         >
            <i data-feather="edit-2" className="mr-50" />
            <span>Edit</span>
          </a>
-         <a className="dropdown-item" href="javascript:void(0);">
+         <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteUser(e.UserId)}>
            <i data-feather="trash" className="mr-50" />
            <span>Delete</span>
          </a>
+         <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
+        onClick={()=>{
+          setChangeStatus(e.Status)
+          setUserPk(e.UserId)
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>Change Status</span>
+       </a>
        </div>
      </div>
    </td>
@@ -174,64 +372,42 @@ const  Model=() =>{
            {/* Modal to add new user starts*/}
       <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-in">
         <div className="modal-dialog">
-          <form className="add-new-user modal-content pt-0">
+          <form className="add-new-user modal-content pt-0" onSubmit={addUser}>
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
             <div className="modal-header mb-1">
               <h5 className="modal-title" id="exampleModalLabel">New User</h5>
             </div>
             <div className="modal-body flex-grow-1">
               <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-fullname">Full Name</label>
-                <input type="text" className="form-control dt-full-name" id="basic-icon-default-fullname" placeholder="John Doe" name="user-fullname" aria-label="John Doe" aria-describedby="basic-icon-default-fullname2" />
+              
+                <label>Agency Name</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setAgencyName(e.target.value)} value={AgencyName} required/>
+              </div>
+          
+              <div className="form-group">
+                <label>Username</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setUsername(e.target.value)} value={Username} required/>
+              </div>
+      
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" className="form-control dt-full-name"  onChange={(e)=>setEmail(e.target.value)} value={Email} required/>
+              </div>
+      
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" className="form-control dt-full-name"  onChange={(e)=>setPassword(e.target.value)} value={Password} required/>
+              </div>
+              
+              <div className="form-group">
+                <label>Contact No</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setContactNo(e.target.value)} value={ContactNo} required/>
               </div>
               <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-uname">Username</label>
-                <input type="text" id="basic-icon-default-uname" className="form-control dt-uname" placeholder="Web Developer" aria-label="jdoe1" aria-describedby="basic-icon-default-uname2" name="user-name" />
+                <label>Address</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setAddress(e.target.value)} value={Address} required/>
               </div>
-        
-
-
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-email">Email</label>
-                <input type="text" id="basic-icon-default-email" className="form-control dt-email" placeholder="john.doe@example.com" aria-label="john.doe@example.com" aria-describedby="basic-icon-default-email2" name="user-email" />
-                <small className="form-text text-muted"> You can use letters, numbers &amp; periods </small>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-email">Password</label>
-                <input type="Password" id="basic-icon-default-email" className="form-control dt-email" placeholder="**********" aria-label="*********" aria-describedby="basic-icon-default-email2" name="user-email" />
-                <small className="form-text text-muted"> You can use letters, numbers &amp; periods </small>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-email">Contact No</label>
-                <input type="text" id="basic-icon-default-email" className="form-control dt-email" placeholder="Contact No" aria-label="Contact No" aria-describedby="basic-icon-default-email2" name="user-email" />
-                <small className="form-text text-muted"> You can use  numbers  </small>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="basic-icon-default-email">Date of Birth</label>
-                <input type="date" id="basic-icon-default-email" className="form-control dt-email" placeholder="Contact No" aria-label="Contact No" aria-describedby="basic-icon-default-email2" name="user-email" />
-        
-              </div>
-
-              <div className="form-group mb-2">
-                <label className="form-label" htmlFor="user-plan">Select Gender</label>
-                <select id="user-plan" className="form-control">
-                  <option value="basic">Male</option>
-                  <option value="enterprise">Female</option>
-                 
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="user-role">User Role</label>
-                <select id="user-role" className="form-control">
-                  <option value="subscriber">Subscriber</option>
-                  <option value="editor">Editor</option>
-                  <option value="maintainer">Maintainer</option>
-                  <option value="author">Author</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-         
+      
               <button type="submit" className="btn btn-primary mr-1 data-submit">Submit</button>
               <button type="reset" className="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
             </div>
@@ -239,7 +415,85 @@ const  Model=() =>{
         </div>
       </div>
       {/* Modal to add new user Ends*/}
+
+           {/* User Edit*/}
+      <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-edit">
+        <div className="modal-dialog">
+          <form className="add-new-user modal-content pt-0" onSubmit={editUser}>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">Edit User</h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+              <div className="form-group">
+              
+                <label>Agency Name</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setAgencyName(e.target.value)} value={AgencyName} required/>
+              </div>
+          
+              <div className="form-group">
+                <label>Username</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setUsername(e.target.value)} value={Username} required/>
+              </div>
+      
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" className="form-control dt-full-name"  onChange={(e)=>setEmail(e.target.value)} value={Email} required/>
+              </div>
+      
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" className="form-control dt-full-name"  onChange={(e)=>setPassword(e.target.value)} value={Password} />
+              </div>
+              
+              <div className="form-group">
+                <label>Contact No</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setContactNo(e.target.value)} value={ContactNo} required/>
+              </div>
+              <div className="form-group">
+                <label>Address</label>
+                <input type="text" className="form-control dt-full-name"  onChange={(e)=>setAddress(e.target.value)} value={Address} required/>
+              </div>
+      
+              <button type="submit" className="btn btn-primary mr-1 data-submit">Submit</button>
+              <button type="reset" className="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {/*User Edit end*/}
+          {/* Modal to edit new user starts*/}
+          <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-status">
+        <div className="modal-dialog">
+            
+          <form className="add-new-user modal-content pt-0" onSubmit={changeStatus}>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">Change Status </h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+           
+              
+              <div className="form-group">
+                <label className="form-label" htmlFor="basic-icon-default-uname">Modal</label>
+               <select className="form-control"  name="status" onChange={(e)=>setChangeStatus(e.target.value)} value={ChangeStatus} required>
+                 <option >Select Modal name</option>
+                 <option value="active">Active</option>
+                 <option value="disable">Disable</option>
+                 <option value="pending">pending</option>
+                
+               </select>
+              </div>
+
         
+             
+              <button type="submit" className="btn btn-primary mr-1 data-submit">Submit</button>
+              <button type="reset" className="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {/* Modal to edit new user Ends*/}
         </>
     )
 }

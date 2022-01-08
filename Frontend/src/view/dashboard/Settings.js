@@ -8,6 +8,87 @@ const  Settings=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
   const [data,setData]=useState([]);
   const [userData,setUserData]=useState([]);
+ const updateGenral=(e)=>{
+   e.preventDefault();
+   var formdata = new FormData();
+
+   formdata.append("tab",'general');
+   formdata.append("FullName",e.target[0].value);
+   formdata.append("Email",e.target[1].value);
+   formdata.append("ContactNo", e.target[2].value);
+ 
+   axios({
+     method: 'PUT',
+     url: `${url.url}/api/settings`,
+     data: formdata,
+     headers: {
+ 
+       Authorization: token,
+ 
+     },
+   })
+     .then((response) => {
+     var data= response.data;
+     if(data.status==true){
+       allData();
+     window.$('.close').click()
+     e.target.reset();
+     swal("successfully!", data.message, "success");
+ 
+ 
+   }
+   else {
+ 
+     swal("Incorrect!", data.message, "warning");
+   
+   
+   }
+     }, (error) => {
+       console.log(error);
+       
+     });
+ }
+ const updatePassword=(e)=>{
+
+   e.preventDefault();
+   var formdata = new FormData();
+
+   formdata.append("tab",'changepassword');
+   formdata.append("OldPassword",e.target[0].value);
+   formdata.append("NewPassowrd",e.target[1].value);
+  
+ 
+   axios({
+     method: 'PUT',
+     url: `${url.url}/api/settings`,
+     data: formdata,
+     headers: {
+ 
+       Authorization: token,
+ 
+     },
+   })
+     .then((response) => {
+     var data= response.data;
+     if(data.status==true){
+       allData();
+     window.$('.close').click()
+     e.target.reset();
+     swal("successfully!", data.message, "success");
+ 
+ 
+   }
+   else {
+ 
+     swal("Incorrect!", data.message, "warning");
+   
+   
+   }
+     }, (error) => {
+       console.log(error);
+       
+     });
+ }
   const allData=()=>{
     axios({
       method: 'GET',
@@ -104,12 +185,7 @@ const  Settings=() =>{
                       </a>
                     </li>
                     {/* social */}
-                    <li className="nav-item">
-                      <a className="nav-link" id="account-pill-social" data-toggle="pill" href="#account-vertical-social" aria-expanded="false">
-                        <i data-feather="link" className="font-medium-3 mr-1" />
-                        <span className="font-weight-bold">Social</span>
-                      </a>
-                    </li>
+                   
                   
                   </ul>
                 </div>
@@ -121,23 +197,9 @@ const  Settings=() =>{
                       <div className="tab-content">
                         {/* general tab */}
                         <div role="tabpanel" className="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
-                          {/* header media */}
-                          <div className="media">
-                            <a href="javascript:void(0);" className="mr-25">
-                              <img src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" id="account-upload-img" className="rounded mr-50" alt="profile image" height={80} width={80} />
-                            </a>
-                            {/* upload and reset button */}
-                            <div className="media-body mt-75 ml-1">
-                              <label htmlFor="account-upload" className="btn btn-sm btn-primary mb-75 mr-75">Upload</label>
-                              <input type="file" id="account-upload" hidden accept="image/*" />
-                              <button className="btn btn-sm btn-outline-secondary mb-75">Reset</button>
-                              <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
-                            </div>
-                            {/*/ upload and reset button */}
-                          </div>
-                          {/*/ header media */}
+                        
                           {/* form */}
-                          <form className="validate-form mt-2">
+                          <form className="validate-form mt-2" onSubmit={updateGenral}>
                             <div className="row">
                               <div className="col-12 col-sm-6">
                                 <div className="form-group">
@@ -158,14 +220,7 @@ const  Settings=() =>{
                                 </div>
                               </div>
                            
-                              <div className="col-12 mt-75">
-                                <div className="alert alert-warning mb-50" role="alert">
-                                  <h4 className="alert-heading">Your email is not confirmed. Please check your inbox.</h4>
-                                  <div className="alert-body">
-                                    <a href="javascript: void(0);" className="alert-link">Resend confirmation</a>
-                                  </div>
-                                </div>
-                              </div>
+                             {/* shoaib ghulam */}
                               <div className="col-12">
                                 <button type="submit" className="btn btn-primary mt-2 mr-1">Save changes</button>
                                 <button type="reset" className="btn btn-outline-secondary mt-2">Cancel</button>
@@ -178,9 +233,9 @@ const  Settings=() =>{
                         {/* change password */}
                         <div className="tab-pane fade" id="account-vertical-password" role="tabpanel" aria-labelledby="account-pill-password" aria-expanded="false">
                           {/* form */}
-                          <form className="validate-form">
+                          <form className="validate-form" onSubmit={updatePassword}>
                             <div className="row">
-                              <div className="col-12 col-sm-6">
+                              <div className="col-12 col-sm-12">
                                 <div className="form-group">
                                   <label htmlFor="account-old-password">Old Password</label>
                                   <div className="input-group form-password-toggle input-group-merge">
@@ -195,7 +250,7 @@ const  Settings=() =>{
                               </div>
                             </div>
                             <div className="row">
-                              <div className="col-12 col-sm-6">
+                              <div className="col-12 col-sm-12">
                                 <div className="form-group">
                                   <label htmlFor="account-new-password">New Password</label>
                                   <div className="input-group form-password-toggle input-group-merge">
@@ -208,17 +263,7 @@ const  Settings=() =>{
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-retype-new-password">Retype New Password</label>
-                                  <div className="input-group form-password-toggle input-group-merge">
-                                    <input type="password" className="form-control" id="account-retype-new-password" name="confirm-new-password" placeholder="New Password" />
-                                    <div className="input-group-append">
-                                      <div className="input-group-text cursor-pointer"><i data-feather="eye" /></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              
                               <div className="col-12">
                                 <button type="submit" className="btn btn-primary mr-1 mt-1">Save changes</button>
                                 <button type="reset" className="btn btn-outline-secondary mt-1">Cancel</button>
@@ -270,167 +315,8 @@ const  Settings=() =>{
                           {/*/ form */}
                         </div>
                         {/*/ information */}
-                        {/* social */}
-                        <div className="tab-pane fade" id="account-vertical-social" role="tabpanel" aria-labelledby="account-pill-social" aria-expanded="false">
-                          {/* form */}
-                          <form className="validate-form">
-                            <div className="row">
-                              {/* social header */}
-                              <div className="col-12">
-                                <div className="d-flex align-items-center mb-2">
-                                  <i data-feather="link" className="font-medium-3" />
-                                  <h4 className="mb-0 ml-75">Social Links</h4>
-                                </div>
-                              </div>
-                              {/* twitter link input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-twitter">Twitter</label>
-                                  <input type="text" id="account-twitter" className="form-control" placeholder="Add link" defaultValue="https://www.twitter.com" />
-                                </div>
-                              </div>
-                              {/* facebook link input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-facebook">Facebook</label>
-                                  <input type="text" id="account-facebook" className="form-control" placeholder="Add link" />
-                                </div>
-                              </div>
-                              {/* google plus input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-google">Google+</label>
-                                  <input type="text" id="account-google" className="form-control" placeholder="Add link" />
-                                </div>
-                              </div>
-                              {/* linkedin link input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-linkedin">LinkedIn</label>
-                                  <input type="text" id="account-linkedin" className="form-control" placeholder="Add link" defaultValue="https://www.linkedin.com" />
-                                </div>
-                              </div>
-                              {/* instagram link input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-instagram">Instagram</label>
-                                  <input type="text" id="account-instagram" className="form-control" placeholder="Add link" />
-                                </div>
-                              </div>
-                              {/* Quora link input */}
-                              <div className="col-12 col-sm-6">
-                                <div className="form-group">
-                                  <label htmlFor="account-quora">Quora</label>
-                                  <input type="text" id="account-quora" className="form-control" placeholder="Add link" />
-                                </div>
-                              </div>
-                              {/* divider */}
-                              <div className="col-12">
-                                <hr className="my-2" />
-                              </div>
-                              <div className="col-12 mt-1">
-                                {/* profile connection header */}
-                                <div className="d-flex align-items-center mb-3">
-                                  <i data-feather="user" className="font-medium-3" />
-                                  <h4 className="mb-0 ml-75">Website Connections</h4>
-                                </div>
-                                <div className="row">
-                                  {/* twitter user */}
-                                  <div className="col-6 col-md-3 text-center mb-1">
-                                    <p className="font-weight-bold">Your Twitter</p>
-                                    <div className="avatar mb-1">
-                                      <span className="avatar-content">
-                                        <img src="../../../app-assets/images/avatars/11-small.png" alt="avatar img" width={40} height={40} />
-                                      </span>
-                                    </div>
-                                    <p className="mb-0">@johndoe</p>
-                                    <a href="javascript:void(0)">Disconnect</a>
-                                  </div>
-                                  {/* facebook button */}
-                                  <div className="col-6 col-md-3 text-center mb-1">
-                                    <p className="font-weight-bold mb-2">Your Facebook</p>
-                                    <button className="btn btn-outline-primary">Connect</button>
-                                  </div>
-                                  {/* google user */}
-                                  <div className="col-6 col-md-3 text-center mb-1">
-                                    <p className="font-weight-bold">Your Google</p>
-                                    <div className="avatar mb-1">
-                                      <span className="avatar-content">
-                                        <img src="../../../app-assets/images/avatars/3-small.png" alt="avatar img" width={40} height={40} />
-                                      </span>
-                                    </div>
-                                    <p className="mb-0">@luraweber</p>
-                                    <a href="javascript:void(0)">Disconnect</a>
-                                  </div>
-                                  {/* github button */}
-                                  <div className="col-6 col-md-3 text-center mb-2">
-                                    <p className="font-weight-bold mb-1">Your GitHub</p>
-                                    <button className="btn btn-outline-primary">Connect</button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-12">
-                                {/* submit and cancel button */}
-                                <button type="submit" className="btn btn-primary mr-1 mt-1">Save changes</button>
-                                <button type="reset" className="btn btn-outline-secondary mt-1">Cancel</button>
-                              </div>
-                            </div>
-                          </form>
-                          {/*/ form */}
-                        </div>
-                        {/*/ social */}
-                        {/* notifications */}
-                        <div className="tab-pane fade" id="account-vertical-notifications" role="tabpanel" aria-labelledby="account-pill-notifications" aria-expanded="false">
-                          <div className="row">
-                            <h6 className="section-label mx-1 mb-2">Activity</h6>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch1" />
-                                <label className="custom-control-label" htmlFor="accountSwitch1">
-                                  Email me when someone comments onmy article
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch2" />
-                                <label className="custom-control-label" htmlFor="accountSwitch2">
-                                  Email me when someone answers on my form
-                                </label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" id="accountSwitch3" />
-                                <label className="custom-control-label" htmlFor="accountSwitch3">Email me hen someone follows me</label>
-                              </div>
-                            </div>
-                            <h6 className="section-label mx-1 mt-2">Application</h6>
-                            <div className="col-12 mt-1 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch4" />
-                                <label className="custom-control-label" htmlFor="accountSwitch4">News and announcements</label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-2">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" defaultChecked id="accountSwitch6" />
-                                <label className="custom-control-label" htmlFor="accountSwitch6">Weekly product updates</label>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-75">
-                              <div className="custom-control custom-switch">
-                                <input type="checkbox" className="custom-control-input" id="accountSwitch5" />
-                                <label className="custom-control-label" htmlFor="accountSwitch5">Weekly blog digest</label>
-                              </div>
-                            </div>
-                            <div className="col-12">
-                              <button type="submit" className="btn btn-primary mt-2 mr-1">Save changes</button>
-                              <button type="reset" className="btn btn-outline-secondary mt-2">Cancel</button>
-                            </div>
-                          </div>
-                        </div>
-                        {/*/ notifications */}
+                     
+                       
                       </div>
                     </div>
                   </div>
