@@ -3,7 +3,7 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import url from '../../baseUrl';
 import {BiDotsVertical} from 'react-icons/bi';
-
+import {Helmet} from "react-helmet";
 const  AgencySettings=() =>{
   let token = `Bearer ` + localStorage.getItem("usertoken")
   const [data,setData]=useState([]);
@@ -130,7 +130,9 @@ const  AgencySettings=() =>{
   },[data.length])
     return (
         <>
-  
+  <Helmet>
+    <title>Anti Medicare System User Setting</title>
+    </Helmet>
    {/* BEGIN: Content*/}
    <div className="app-content content ">
         <div className="content-overlay" />

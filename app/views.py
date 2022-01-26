@@ -671,7 +671,7 @@ class NearLocations(APIView):
         # lat2=24.90528159995955
         # lon2=67.11237083775545
         nearLocations=list()
-        data=LocationModel.objects.filter(ModalId=id)
+        data=LocationModel.objects.filter(ModalId=id, Status="active")
        
         for mydata in data:
             nearDistance=dist(lat,lon,mydata.Lititude,mydata.Longitude)

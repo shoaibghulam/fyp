@@ -9,7 +9,7 @@ import {FaFirefoxBrowser } from 'react-icons/fa';
 import Loader from '../../components/Loader'
 import useGeoLocation from "../../components/useGeoLocation";
 import Homenav from '../../layout/home/Homenav';
-
+import {Helmet} from "react-helmet";
 const Home=()=> {
   const [show, setShow] = useState(true);
   const [data,setData]=useState([]);
@@ -70,7 +70,7 @@ const showBox=()=>{
 
       },3000)
   //  alert(location.coordinates.lat)
-   
+  //  console.log(location.coordinates)
 
      allData();
    
@@ -79,15 +79,13 @@ const showBox=()=>{
     return(
   <>
 {/* {loader ? <Loader /> :null } */}
-
+<Helmet>
+  <title>Anti Medicare System</title>
+</Helmet>
  <Homenav shwoBox={showBox}/>
 
-<section className="container-fluid bg-dark">
-    <div className="row p-0">
-      
-    <div className={fullWidth ? "col-md-8 p-0" :"col-md-12 p-0"}>
-    
-    <div style={{ height: '92vh', width: '100%', padding:'0', margin:'0' }}>
+<section className="">
+<div style={{ height: '92vh', width: '100%', padding:'0', margin:'0' }}>
          <GoogleMapReact
          
         
@@ -116,35 +114,17 @@ const showBox=()=>{
  key={e.LocationId}
  lat={e.Lititude}
  lng={e.Longitude}
- onClick={()=>{setFullWidth(true); setSingleData(e)}}
+ onClick={()=>{ setSingleData(e)}}
+ data-toggle="modal" data-target="#modal-desc"
 > 
-  <span className="text-primary ">{e.Address}</span>
-    <img src="assets/marker.png" style={{margin:0, padding:0,}}/>
+    <img src="assets/marker.png" style={{margin:0, padding:0,}}/> <br></br>
+  <span className="text-bold">{e.LocationTitle}</span>
    </div>
           ))}
          
         
         </GoogleMapReact> 
       </div>
-
-    </div>
- <div className={fullWidth ? "d-block col-md-4 fullwidth" :"d-none"}>
-  <a href="javascript:void(0)" onClick={()=>setFullWidth(false)}><AiFillCloseCircle size={30} className="my-icon"/></a>
-  <div className="container mt-4 ">
-    <h1 className="text-center mb-3">{singleData.LocationTitle}</h1>
-    <div className="mb-4" dangerouslySetInnerHTML={{__html: singleData.Description}}></div>
-  
-    <ul className='list-unstyled info-quote'>
-      <li><strong><BiMap size={20} /> Address:</strong>{singleData.Address}</li>
-      <li><strong><AiFillContacts size={20} /> Contact NO:</strong> {singleData.ContactNo}</li>
-      {/* <li><strong>Email:</strong> {singleData.UserId.Email}</li> */}
-      <li><strong><FaFirefoxBrowser size={20} /> Website: </strong><a href={singleData.WebsiteLink}>{singleData.WebsiteLink}</a></li>
-     
-    </ul>
-  </div>
- </div>
-    </div>
-
 {/* modal start */}
 <Modal
         show={show}
@@ -159,10 +139,10 @@ const showBox=()=>{
         </Modal.Header>
         <Modal.Body>
           {/* cards start */}
-          <div className="container">
+          <div className="mx-auto">
         <div className="row">
           {data.map((e)=>(
-  <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3" onClick={()=>{getAllLocation(e.ModalId); handleClose()}}>
+  <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-12" onClick={()=>{getAllLocation(e.ModalId); handleClose()}}>
   <div className="card shadow">
     <img src={`${url.url}${e.ModalThumbnail}`} className="card-img-top" style={{height:'215px'}}/>
     <div className="card-body">
@@ -187,6 +167,35 @@ const showBox=()=>{
         </Modal.Footer>
       </Modal>
 {/* modal end*/}
+ {/* Modal to edit new user starts*/}
+ <div className="modal modal-slide-in new-user-modal fade" id="modal-desc">
+        <div className="modal-dialog modal-full">
+            
+          <form className="add-new-user modal-content pt-0" >
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">Location </h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+          <div className=""  >
+          <div className=" ">
+    <h1 className="text-center mb-3">{singleData.LocationTitle}</h1>
+    <div className="mb-4" dangerouslySetInnerHTML={{__html: singleData.Description}}></div>
+  
+    <ul className='list-unstyled info-quote'>
+      <li><strong><BiMap size={20} /> Address:</strong>{singleData.Address}</li>
+      <li><strong><AiFillContacts size={20} /> Contact NO:</strong> {singleData.ContactNo}</li>
+      {/* <li><strong>Email:</strong> {singleData.UserId.Email}</li> */}
+      <li><strong><FaFirefoxBrowser size={20} /> Website: </strong><a href={singleData.WebsiteLink}>{singleData.WebsiteLink}</a></li>
+     
+    </ul>
+  </div>
+          </div>
+              
+            </div>
+          </form>
+        </div>
+      </div>
 </section>
   </>
     )

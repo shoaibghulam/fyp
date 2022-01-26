@@ -6,6 +6,7 @@ import {BiDotsVertical} from 'react-icons/bi';
 import Finder from '../../components/Finder';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
+import {Helmet} from "react-helmet";
 const  UserHome=() =>{
   let token = `Bearer ` + localStorage.getItem("usertoken")
   const [data,setData]=useState([]);
@@ -203,7 +204,9 @@ const  UserHome=() =>{
   },[data.length])
     return (
         <>
-  
+  <Helmet>
+    <title>Anti Medicare System  Panel</title>
+  </Helmet>
       {/* BEGIN: Content*/}
       <div className="app-content content ">
         <div className="content-overlay" />

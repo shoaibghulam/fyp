@@ -2,6 +2,10 @@ import React from 'react'
 import { Link,useHistory  } from 'react-router-dom';
 export default function Navbar() {
   const history = useHistory();
+  const logout=()=>{
+    localStorage.removeItem('usertoken');
+    history.push('/login')
+  }
     return (
         <>
              {/* BEGIN: Header*/}
@@ -36,8 +40,9 @@ export default function Navbar() {
               <li className="nav-item dropdown dropdown-user"><a className="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="javascript:void(0);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <div className="user-nav d-sm-flex d-none"><span className="user-name font-weight-bolder">{ localStorage.getItem('agencyName')}</span><span className="user-status">User</span></div><span className="avatar"><img className="round" src="app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height={40} width={40} /><span className="avatar-status-online" /></span>
                 </a>
-                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user"><a className="dropdown-item" href="page-profile.html"><i className="mr-50" data-feather="user" /> Profile</a><a className="dropdown-item" href="app-email.html"><i className="mr-50" data-feather="mail" /> Inbox</a><a className="dropdown-item" href="app-todo.html"><i className="mr-50" data-feather="check-square" /> Task</a><a className="dropdown-item" href="app-chat.html"><i className="mr-50" data-feather="message-square" /> Chats</a>
-                  <div className="dropdown-divider" /><a className="dropdown-item" href="page-account-settings.html"><i className="mr-50" data-feather="settings" /> Settings</a><a className="dropdown-item" href="page-pricing.html"><i className="mr-50" data-feather="credit-card" /> Pricing</a><a className="dropdown-item" href="page-faq.html"><i className="mr-50" data-feather="help-circle" /> FAQ</a><a className="dropdown-item" href="page-auth-login-v2.html"><i className="mr-50" data-feather="power" /> Logout</a>
+                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user"><Link className="dropdown-item" to="/agencysettings"><i className="mr-50" data-feather="user" /> Settings</Link>
+                  <div className="dropdown-divider" />
+                  <a className="dropdown-item" href="javascript:void(0);" onClick={()=>logout()}><i className="mr-50" data-feather="power" /> Logout</a>
                 </div>
               </li>
             </ul>
@@ -168,7 +173,7 @@ export default function Navbar() {
                 <Link className="d-flex align-items-center" to="/agencysettings"><i data-feather="calendar" /><span className="menu-title text-truncate" data-i18n="settings">Settings </span></Link>
               </li>
               <li className=" nav-item">
-                <Link className="d-flex align-items-center" to="/login"><i data-feather="grid" /><span className="menu-title text-truncate" data-i18n="power">Logout</span></Link>
+                <Link className="d-flex align-items-center" to="#" onClick={()=>logout()}><i data-feather="grid" /><span className="menu-title text-truncate" data-i18n="power">Logout</span></Link>
               </li>
             
             
