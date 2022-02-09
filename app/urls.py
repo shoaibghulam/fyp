@@ -5,7 +5,7 @@ from app.views import *
 urlpatterns = [
  path('register', RegisterUser.as_view(),name="register"),
  path('register/<int:pk>', RegisterUser.as_view(),name="register"),
- path('login', LoginUser.as_view(),name="login"),
+ path('login_vendor', LoginVendor.as_view(),name="login_vendor"),
  path('adminlogin', LoginAdmin.as_view(),name="adminlogin"),
  path('models',ModelView.as_view(),name="models"),
  path('models/<int:pk>',ModelView.as_view(),name="models"),
@@ -25,4 +25,10 @@ urlpatterns = [
  path('nearlocation',NearLocations.as_view(),name="nearlocation"),
 
 # ---------------Public API end
+# user Account start
+path('userregister',UserRegister.as_view(),name="UserRegister"),
+path('verify',VerifyClient.as_view(),name="verify"),
+path('login',LoginUser.as_view(),name="login"),
+# user Account end
+
 ]

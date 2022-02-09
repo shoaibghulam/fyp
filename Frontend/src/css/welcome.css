@@ -1,0 +1,95 @@
+
+.section-b{
+    height:100vh;
+    overflow-y: scroll;
+    background-image: linear-gradient(to right top, #ffffff, #fdfeff, #f9fdfe, #f7fdfa, #f9fbf5);
+    background-size: cover;
+}
+
+.welcome-logo{
+    
+    position: absolute;
+    left: 27%;
+    top: 29%;
+
+}
+
+.xl-font{
+    font-size:50px;
+    text-shadow: 1px 1px #5C52C0;
+}
+.width-90{
+    width:90%;
+}
+.mt-100{
+    margin-top:100px;
+}
+
+.welcome-text{
+    color:#000 !important;
+}
+.text-black{
+    color:#000 !important;
+}
+.my-tab .nav-item{
+    width:50%;
+   
+}
+.my-tab .nav-tabs .nav-item .nav-link{
+    padding:20px 0;
+    width:100%;
+    background-image: linear-gradient(to right top, #3626e7, #3e2eeb, #4635ef, #4d3cf3, #5443f7) ;
+    color:#fff !important;
+    font-size:14px !important;
+}
+.my-tab .nav-tabs .nav-item .nav-link.active{
+    background: linear-gradient(to right top, #161d31, #131a2d, #111729, #0f1425, #0c1121) !important;
+    color:#fff;
+}
+.my-tab .nav-tabs {
+    margin-bottom: 1rem !important;
+    
+}
+.custom-form input , .custom-form label{
+    color:#000;
+    text-align: left;
+    font-size:13px;
+}
+.custom-from label{
+    font-size:15px;
+}
+.custom-form  .custom-input{
+    width:100%;
+    border:none;
+    border-bottom: 2px solid #000;
+    background:none;
+    padding:5px 0;
+}
+.custom-input:focus{
+    border-color: inherit;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    outline:none
+   
+}
+.custom-form .custom-input:-webkit-autofill{
+        outline:none;
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #000 !important;
+        -webkit-background-clip: none;
+    
+}
+
+.forgetpassword{
+    cursor: pointer;
+    text-decoration: underline;
+    color:#3626e7;
+}
+
+.category-logo{
+    
+    position: absolute;
+    left: 10%;
+    top: 29%;
+
+}

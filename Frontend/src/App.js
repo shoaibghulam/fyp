@@ -15,6 +15,10 @@ import UserHome from './view/users/UserHome';
 import AgencySettings from './view/users/AgencySettings';
 import Home from './view/home/Home';
 import Loader from './components/Loader';
+import Welcome from './view/home/Welcome';
+import Verify from './view/home/Verify';
+import Category from './view/home/Category';
+
 
 
 // import Footer from './components/Footer';
@@ -33,9 +37,17 @@ function App() {
     <Router>
      {loader ? <Loader /> :null }  
     <Switch>
-    <Route exact path='/'>
+    <Route exact path='/map'>
       <Home />
       </Route> 
+    <Route exact path='/'>
+      <Welcome />
+      </Route> 
+      <Route path="/verify/:token/:id" exact component={Verify} />
+      <Route path="/category" exact component={Category} />
+    {/* <Route exact path='/verify/:token/:id'>
+      <Verify />
+      </Route>  */}
      <Main exact path="/admin" comp={Admin}/>
      <Main  path="/modal" comp={Model}/>
      <Main  path="/locations" comp={Data}/>

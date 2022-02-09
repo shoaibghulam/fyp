@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {Navbar , Nav,Container, Modal} from 'react-bootstrap';
+import { Modal} from 'react-bootstrap';
 import GoogleMapReact from 'google-map-react';
 import url from '../../baseUrl';
 import axios from 'axios';
@@ -7,11 +7,16 @@ import {AiFillCloseCircle ,AiFillContacts } from 'react-icons/ai';
 import {BiMap } from 'react-icons/bi';
 import {FaFirefoxBrowser } from 'react-icons/fa';
 import Loader from '../../components/Loader'
-import useGeoLocation from "../../components/useGeoLocation";
+
 import Homenav from '../../layout/home/Homenav';
 import {Helmet} from "react-helmet";
+import { useLocation } from 'react-router-dom'
+
 const Home=()=> {
-  const [show, setShow] = useState(true);
+  const locat = useLocation()
+  const {modalId , location}= locat.state;
+  // const { from } = locat.state
+  const [show, setShow] = useState(false);
   const [data,setData]=useState([]);
   const[fullWidth,setFullWidth]=useState(false);
   const [singleData,setSingleData]=useState([]);
@@ -20,14 +25,16 @@ const Home=()=> {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-const location = useGeoLocation();
-//  all data modal start
-const getAllLocation=(id)=>{
 
+
+//  all data modal start
+const getAllLocation=(id,lat,lng)=>{
+  console.log("my llaaa",id,lat,lng)
   var formdata = new FormData();
   formdata.append("id",id);
-  formdata.append("lat",location.coordinates.lat);
-  formdata.append("lng", location.coordinates.lng);
+  formdata.append("lat",lat);
+  formdata.append("lng", lng);
+  console.log("THe form is",formdata)
   axios({
     method: 'POST',
     url: `${url.url}/api/nearlocation`,
@@ -37,7 +44,7 @@ const getAllLocation=(id)=>{
   })
   .then((response) => {
     var data= response.data;
-    console.log("myloc is ",data)
+      console.log("the response is ",data)
      setLocations(data)
     }, (error) => {
       console.log(error);
@@ -65,6 +72,8 @@ const showBox=()=>{
 }
 
     useEffect(()=>{
+      getAllLocation(modalId,location.coordinates.lat,location.coordinates.lng)
+      console.log("the props is ",location)
       setTimeout(()=>{
         setLoader(false)
 
@@ -74,7 +83,7 @@ const showBox=()=>{
 
      allData();
    
- },[data.length, location])
+ },[data.length])
 
     return(
   <>
@@ -125,48 +134,7 @@ const showBox=()=>{
         
         </GoogleMapReact> 
       </div>
-{/* modal start */}
-<Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        size="xl"
-        
-      >
-        <Modal.Header closeButton>
-          <Modal.Title className="text-light text-center">Select Category</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* cards start */}
-          <div className="mx-auto">
-        <div className="row">
-          {data.map((e)=>(
-  <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-12" onClick={()=>{getAllLocation(e.ModalId); handleClose()}}>
-  <div className="card shadow">
-    <img src={`${url.url}${e.ModalThumbnail}`} className="card-img-top" style={{height:'215px'}}/>
-    <div className="card-body">
-      <h2 className="card-title">{e.ModalTitle}</h2>
-      <p className="card-text">{e.ModalDescription}</p>
-    </div>
-    
-  </div>
-</div>
-          ))}
-      
-       
-        </div>
-      </div>
-          {/* cards end */}
-        </Modal.Body>
-        <Modal.Footer>
-          {/* <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary">Understood</Button> */}
-        </Modal.Footer>
-      </Modal>
-{/* modal end*/}
+
  {/* Modal to edit new user starts*/}
  <div className="modal modal-slide-in new-user-modal fade" id="modal-desc">
         <div className="modal-dialog modal-full">

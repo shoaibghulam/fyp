@@ -12,6 +12,10 @@ class UserModelSer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = '__all__'
+class VendorModelSer(serializers.ModelSerializer):
+    class Meta:
+        model = VendorModel
+        fields = '__all__'
     
 
 class DataModelsSer(serializers.ModelSerializer):
@@ -22,7 +26,7 @@ class DataModelsSer(serializers.ModelSerializer):
 
 class LocationModelSer(serializers.ModelSerializer):
     ModalId=DataModelsSer(DataModels , many=False, read_only=True)
-    UserId=UserModelSer(UserModel , many=False, read_only=True)
+    UserId=VendorModelSer(VendorModel , many=False, read_only=True)
     class Meta:
         model = LocationModel
         fields = '__all__'

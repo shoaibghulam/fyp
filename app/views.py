@@ -11,22 +11,40 @@ import jwt
 import datetime
 from django.db.models import Q
 import requests 
+import random 
 import json
+from django.core.mail import EmailMultiAlternatives
 from math import radians, cos, sin, asin, sqrt
 from decouple import config
 tokenkey = config('jwttoken')
 
 # Create your views here.
+BASE="http://127.0.0.1:3000/"
+def emailverify(subject,to,link,message):
+
+    from_email="komaljan4@gmail.com"
+        
+        
+    html_content = f'''
+                <h1 style="text-align:center; font-family: 'Montserrat', sans-serif;">{message}</h1>
+                    
+                <div style='width:300px; margin:0 auto;'> <a href='{link}' style=" background-color:#0066ff; border: none;  color: white; padding: 15px 32px;  text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; font-family: PT Sans, sans-serif;" >click here</a>
+            </div>
+                '''
+
+    msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 
-class LoginUser(APIView):
+class LoginVendor(APIView):
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-                data=UserModel.objects.get(pk=my_token['id'])
-                serData=UserModelSer(data, many=False)
+                data=VendorModel.objects.get(pk=my_token['id'])
+                serData=VendorModelSer(data, many=False)
                 return Response({'status':True,'data':serData.data})
             else:
                   return Response({'status':False,'message':'token is expire'})
@@ -35,7 +53,7 @@ class LoginUser(APIView):
          return Response({'status':False,'message':str(e)})
     def post(self, request , format=None):
         try: 
-            loginQuery=UserModel.objects.get(Username=request.data['Username'] , Status='active')
+            loginQuery=VendorModel.objects.get(Username=request.data['Username'] , Status='active')
             if hash.verify(request.data['Password'],loginQuery.Password):
                 print("NEO Data")
                 access_token_payload = {
@@ -65,8 +83,8 @@ class RegisterUser(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-                data=UserModel.objects.all().order_by('-pk')
-                serData=UserModelSer(data, many=True)
+                data=VendorModel.objects.all().order_by('-pk')
+                serData=VendorModelSer(data, many=True)
                 return Response({'status':True,'data':serData.data})
             else:
                   return Response({'status':False,'message':'token is expire'})
@@ -75,7 +93,7 @@ class RegisterUser(APIView):
          return Response({'status':False,'message':str(e)})
     
     def post(self , request, format=None):
-        checkAccount=UserModel.objects.filter(Q(Username=request.data['Username'])| Q(Email=request.data['Email']))
+        checkAccount=VendorModel.objects.filter(Q(Username=request.data['Username'])| Q(Email=request.data['Email']))
       
         if checkAccount:
             message = {'status':False,'message':'Account Already Exist'}
@@ -91,7 +109,7 @@ class RegisterUser(APIView):
            
         }
        
-        serializer = UserModelSer(data=dataset)
+        serializer = VendorModelSer(data=dataset)
         if serializer.is_valid():
             serializer.save()
             message = {'status':True,'message':'Account has been Register SuccessFully'}
@@ -104,7 +122,7 @@ class RegisterUser(APIView):
        
       
         
-        inst=UserModel.objects.get(pk=pk)
+        inst=VendorModel.objects.get(pk=pk)
         password=request.data['Password']
         if password == 'null':
             password=inst.Password
@@ -141,7 +159,7 @@ class RegisterUser(APIView):
             'Password':password,
            
         }
-        serializer = UserModelSer(inst,data=dataset)
+        serializer = VendorModelSer(inst,data=dataset)
         if serializer.is_valid():
             serializer.save()
             message = {'status':True,'message':'Account has been Updated SuccessFully'}
@@ -151,7 +169,7 @@ class RegisterUser(APIView):
 
     def delete(self , request,pk, format=None):
        
-        data=UserModel.objects.get(pk=pk)
+        data=VendorModel.objects.get(pk=pk)
              
         if data:
             data.delete()
@@ -283,7 +301,7 @@ class LocationViews(APIView):
                     Address=request.data['Address'],
                     WebsiteLink=request.data['WebsiteLink'],
                     ModalId=DataModels.objects.get(pk=request.data['ModalId']),
-                    UserId=UserModel.objects.get(pk=11)
+                    UserId=VendorModel.objects.get(pk=11)
                 ) 
                
                 data.save()
@@ -314,7 +332,7 @@ class LocationViews(APIView):
                 data.Address=request.data['Address']
                 data.WebsiteLink=request.data['WebsiteLink']
                 data.ModalId=DataModels.objects.get(pk=request.data['ModalId'])
-                data.UserId=UserModel.objects.get(pk=11)
+                data.UserId=VendorModel.objects.get(pk=11)
                 
                
                 data.save()
@@ -472,7 +490,7 @@ class AdminStatus(APIView):
                         message = {'status':True,'message':'Status has been change Successfully'}
                         return Response(message)
                 elif request.data['tab']=="userstaus":
-                        data = UserModel.objects.get(pk=pk)
+                        data = VendorModel.objects.get(pk=pk)
                        
                 
                         if data:
@@ -523,7 +541,7 @@ class LocationUserViews(APIView):
                     Address=request.data['Address'],
                     WebsiteLink=request.data['WebsiteLink'],
                     ModalId=DataModels.objects.get(pk=request.data['ModalId']),
-                    UserId=UserModel.objects.get(pk=my_token['id'])
+                    UserId=VendorModel.objects.get(pk=my_token['id'])
                 ) 
                
                 data.save()
@@ -554,7 +572,7 @@ class LocationUserViews(APIView):
                 data.Address=request.data['Address']
                 data.WebsiteLink=request.data['WebsiteLink']
                 data.ModalId=DataModels.objects.get(pk=request.data['ModalId'])
-                data.UserId=UserModel.objects.get(pk=my_token['id'])
+                data.UserId=VendorModel.objects.get(pk=my_token['id'])
                 
                
                 data.save()
@@ -601,8 +619,8 @@ class AgencySettingsViews(APIView):
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
                 
-                userData=UserModel.objects.get(pk=my_token['id'])
-                userdata=UserModelSer(userData, many=False)
+                userData=VendorModel.objects.get(pk=my_token['id'])
+                userdata=VendorModelSer(userData, many=False)
                 
                 return Response({'status':True,'data':userdata.data})
             else:
@@ -617,7 +635,7 @@ class AgencySettingsViews(APIView):
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
                 msg=""
-                data=UserModel.objects.get(pk=my_token['id'])
+                data=VendorModel.objects.get(pk=my_token['id'])
                 if(request.data['tab']=="general"):
                     data.AgencyName=request.data['FullName']
                     data.Email=request.data['Email']
@@ -702,4 +720,140 @@ def dist(lat1, long1, lat2, long2):
     # return loc
 
 
+class UserRegister(APIView):
+    def post(self,request,  format=None):
+        checkAccount=UserModel.objects.filter(Email=request.data['Email'])
+      
+        if checkAccount:
+            message = {'status':False,'message':'Account Already Exist'}
+            return Response(message)
 
+
+        token=random.randint(1,5000)
+
+        dataset={
+            'FirstName':request.data['FirstName'],
+            'LastName':request.data['LastName'],
+            'Email':request.data['Email'],
+            'ContactNo':request.data['ContactNo'],
+            'Address':request.data['Address'],
+            'Password':hash.hash(request.data['Password']),
+            'Token':token,
+           
+        }
+       
+        serializer = UserModelSer(data=dataset)
+        if serializer.is_valid():
+            serializer.save()
+            message = {'status':True,'message':'Account has been Register SuccessFully'}
+         
+            subject="Please Verify Your Accounts"
+            id=serializer.data['UserId']
+            to=serializer.data['Email']
+            token=serializer.data['Token']
+            link=f"{BASE}/verify/{token}/{id}"
+            message=f"Hi, {serializer.data['FirstName']} Please Verify Your Account"
+            emailverify(subject,to,link,message)
+            return Response(message)
+           
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+  
+
+
+
+
+class LoginClient(APIView):
+    def get(self,request):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            if my_token:
+                data=UserModel.objects.get(pk=my_token['id'])
+                serData=UserModelSer(data, many=False)
+                return Response({'status':True,'data':serData.data})
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+         return Response({'status':False,'message':str(e)})
+    def post(self, request , format=None):
+        try: 
+            loginQuery=UserModel.objects.get(Email=request.data['Email'] , Status='active')
+            if hash.verify(request.data['Password'],loginQuery.Password):
+                print("NEO Data")
+                access_token_payload = {
+                'id': loginQuery.pk,
+                'name':f"{loginQuery.FirstName} {loginQuery.LastName}",
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'iat': datetime.datetime.utcnow(),
+
+                }
+
+                access_token = jwt.encode(access_token_payload,tokenkey, algorithm='HS256').decode('utf-8')
+
+                message = {'status':True,'message':'Login SuccessFully','token':access_token,'user':{'name':f"{loginQuery.FirstName} {loginQuery.LastName}",'id':loginQuery.pk}}
+                return Response(message)
+
+            else:
+                message = {'status':False,'message':'Invalid Credential'}
+                return Response(message)
+        except:
+          
+            message = {'status':'false','message':'Invalid Credential'}
+            return Response(message)
+        # return Response({'data':'sucess'})
+
+
+class VerifyClient(APIView):
+    def post(self, request, format=None):
+        data=UserModel.objects.get(pk=request.data['id'])
+        if data.Token == request.data['token']:
+            data.Status='enable'
+            data.Token="None"
+            data.save()
+            message = {'message':'Your Account has been Verify'}
+            return Response(message)
+        else:
+            message = {'message':'Account is already verify'}
+            return Response(message)
+            
+
+class LoginUser(APIView):
+    def get(self,request):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            if my_token:
+                data=VendorModel.objects.get(pk=my_token['id'])
+                serData=VendorModelSer(data, many=False)
+                return Response({'status':True,'data':serData.data})
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+         return Response({'status':False,'message':str(e)})
+    def post(self, request , format=None):
+        try: 
+            loginQuery=UserModel.objects.get(Email=request.data['Email'] , Status='active')
+            if hash.verify(request.data['Password'],loginQuery.Password):
+               
+                access_token_payload = {
+                'id': loginQuery.pk,
+                'name':loginQuery.FirstName,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'iat': datetime.datetime.utcnow(),
+
+                }
+
+                access_token = jwt.encode(access_token_payload,tokenkey, algorithm='HS256').decode('utf-8')
+
+                message = {'status':True,'message':'Login SuccessFully','token':access_token,'user':{'FullName':f"{loginQuery.FirstName} {loginQuery.LastName}",'id':loginQuery.pk}}
+                return Response(message)
+
+            else:
+                message = {'status':False,'message':'Invalid Credential'}
+                return Response(message)
+        except:
+          
+            message = {'status':'false','message':'Invalid Credential'}
+            return Response(message)
+        # return Response({'data':'sucess'})
