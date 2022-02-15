@@ -360,7 +360,7 @@ const  Admin=() =>{
        <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
-          setDataPk(e.LocationId)
+          setDataPk(e.ProductId)
         }}
        >
          <i data-feather="trash" className="mr-50" />

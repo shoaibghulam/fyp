@@ -22,7 +22,7 @@ const  UserLogin=() =>{
 
         axios({
             method: 'POST',
-            url: `${url.url}/api/login`,
+            url: `${url.url}/api/login_vendor`,
             data:formdata
             })
             .then((response) => {
@@ -31,8 +31,8 @@ const  UserLogin=() =>{
            
             if(data.status==true){
               
-                localStorage.setItem('usertoken',data.token);
-                localStorage.setItem('id',data.user.id)
+                localStorage.setItem('vendorToken',data.token);
+                localStorage.setItem('vendorid',data.user.id)
                 localStorage.setItem('agencyName',data.user.agencyName)
         
               swal("successfully!", data.message, "success");

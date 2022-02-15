@@ -5,7 +5,7 @@ import url from '../../baseUrl';
 import {BiDotsVertical} from 'react-icons/bi';
 import {Helmet} from "react-helmet";
 const  AgencySettings=() =>{
-  let token = `Bearer ` + localStorage.getItem("usertoken")
+  let token = `Bearer ` + localStorage.getItem("vendorToken")
   const [data,setData]=useState([]);
   const [userData,setUserData]=useState([]);
  const updateGenral=(e)=>{

@@ -18,6 +18,9 @@ import Loader from './components/Loader';
 import Welcome from './view/home/Welcome';
 import Verify from './view/home/Verify';
 import Category from './view/home/Category';
+import UserRoute from './layout/dashboard/UserRoute';
+import Order from './view/home/Order';
+import VendorOrders from './view/users/VendorOrders';
 
 
 
@@ -37,17 +40,17 @@ function App() {
     <Router>
      {loader ? <Loader /> :null }  
     <Switch>
-    <Route exact path='/map'>
-      <Home />
-      </Route> 
+    
     <Route exact path='/'>
       <Welcome />
       </Route> 
+      {/* User Route start */}
+      <UserRoute path="/category" exact component={Category} />
+      <UserRoute path="/map" exact component={Home} />
+      <UserRoute path="/order_now" exact component={Order} />
+      {/* User Route end */}
       <Route path="/verify/:token/:id" exact component={Verify} />
-      <Route path="/category" exact component={Category} />
-    {/* <Route exact path='/verify/:token/:id'>
-      <Verify />
-      </Route>  */}
+
      <Main exact path="/admin" comp={Admin}/>
      <Main  path="/modal" comp={Model}/>
      <Main  path="/locations" comp={Data}/>
@@ -59,7 +62,7 @@ function App() {
       </Route> 
     
     
-      <Route  path='/login'>
+      <Route  path='/vendor_login'>
       <UserLogin  />
       </Route> 
     
@@ -69,7 +72,8 @@ function App() {
      
 
      {/* user panel dashboard start */}
-     <Panel path="/panel" comp={UserHome} />
+     <Panel path="/panel" comp={VendorOrders} />
+     {/* <Panel path="/panel" comp={UserHome} /> */}
      <Panel path="/agencysettings" comp={AgencySettings} />
      {/* user panel dashboard end */}
     </Switch>

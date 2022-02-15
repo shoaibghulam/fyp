@@ -16,6 +16,15 @@ import json
 from django.core.mail import EmailMultiAlternatives
 from math import radians, cos, sin, asin, sqrt
 from decouple import config
+import pusher
+
+pusher_client = pusher.Pusher(
+  app_id='1347586',
+  key='197d770c643a357ecfcf',
+  secret='8af2becad02f4919b398',
+  cluster='ap2',
+  ssl=True
+)
 tokenkey = config('jwttoken')
 
 # Create your views here.
@@ -64,9 +73,9 @@ class LoginVendor(APIView):
 
                 }
 
-                access_token = jwt.encode(access_token_payload,tokenkey, algorithm='HS256').decode('utf-8')
+                panel_token = jwt.encode(access_token_payload,tokenkey, algorithm='HS256').decode('utf-8')
 
-                message = {'status':True,'message':'Login SuccessFully','token':access_token,'user':{'agencyName':loginQuery.AgencyName,'id':loginQuery.pk}}
+                message = {'status':True,'message':'Login SuccessFully','token':panel_token,'user':{'agencyName':loginQuery.AgencyName,'id':loginQuery.pk}}
                 return Response(message)
 
             else:
@@ -277,8 +286,8 @@ class LocationViews(APIView):
             if my_token:
                 modaldata=DataModels.objects.all().order_by('-pk')
                 serModal=DataModelsSer(modaldata, many=True)
-                data=LocationModel.objects.all().order_by('-pk')
-                serData=LocationModelSer(data, many=True)
+                data=ProductModel.objects.all().order_by('-pk')
+                serData=ProductModelSer(data, many=True)
                 return Response({'status':True,'data':serData.data,'model':serModal.data})
             else:
                   return Response({'status':False,'message':'token is expire'})
@@ -291,14 +300,16 @@ class LocationViews(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-              
-                data=LocationModel(
-                    LocationTitle=request.data['LocationTitle'],
+                print(request.data)
+                data=ProductModel(
+                    ProductTitle=request.data['LocationTitle'],
                     Lititude=request.data['Lititude'],
                     Longitude=request.data['Longitude'],
                     ContactNo=request.data['ContactNo'],
                     Description=request.data['Description'],
                     Address=request.data['Address'],
+                    Price=request.data['Price'],
+                    qty=request.data['qty'],
                     WebsiteLink=request.data['WebsiteLink'],
                     ModalId=DataModels.objects.get(pk=request.data['ModalId']),
                     UserId=VendorModel.objects.get(pk=11)
@@ -321,7 +332,7 @@ class LocationViews(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-                data=LocationModel.objects.get(pk=pk)
+                data=ProductModel.objects.get(pk=pk)
               
                 
                 data.LocationTitle=request.data['LocationTitle']
@@ -353,9 +364,9 @@ class LocationViews(APIView):
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
            
             if my_token:
-                data = LocationModel.objects.get(pk=pk)
+                data = ProductModel.objects.get(pk=pk)
               
-                serializer = LocationModelSer(id,data=data)
+                serializer = ProductModelSer(id,data=data)
                 if data:
                     data.delete()
                     message = {'status':True,'message':'data has been Deleted Successfully'}
@@ -481,7 +492,7 @@ class AdminStatus(APIView):
                 if request.data['tab']=="locationstatus":
                    
 
-                    data = LocationModel.objects.get(pk=pk)
+                    data = ProductModel.objects.get(pk=pk)
                   
                     if data:
                     
@@ -516,8 +527,8 @@ class LocationUserViews(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-                data=LocationModel.objects.filter(UserId=my_token['id']).order_by('-pk')
-                serData=LocationModelSer(data, many=True)
+                data=ProductModel.objects.filter(UserId=my_token['id']).order_by('-pk')
+                serData=ProductModelSer(data, many=True)
                 modaldata=DataModels.objects.all().order_by('-pk')
                 serModal=DataModelsSer(modaldata, many=True)
                 return Response({'status':True,'data':serData.data,'model':serModal.data})
@@ -525,20 +536,23 @@ class LocationUserViews(APIView):
                   return Response({'status':False,'message':'token is expire'})
 
         except Exception as e:
-         return Response({'status':False,'message':str(e)})
+            
+            return Response({'status':False,'message':str(e)})
 
     def post(self, request, format=None):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-              
-                data=LocationModel(
-                    LocationTitle=request.data['LocationTitle'],
+                print("my life is hre")
+                data=ProductModel(
+                    ProductTitle=request.data['LocationTitle'],
                     Lititude=request.data['Lititude'],
                     Longitude=request.data['Longitude'],
                     ContactNo=request.data['ContactNo'],
                     Description=request.data['Description'],
                     Address=request.data['Address'],
+                    Price=request.data['Price'],
+                    qty=request.data['qty'],
                     WebsiteLink=request.data['WebsiteLink'],
                     ModalId=DataModels.objects.get(pk=request.data['ModalId']),
                     UserId=VendorModel.objects.get(pk=my_token['id'])
@@ -561,7 +575,7 @@ class LocationUserViews(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
-                data=LocationModel.objects.get(pk=pk)
+                data=ProductModel.objects.get(pk=pk)
               
                 
                 data.LocationTitle=request.data['LocationTitle']
@@ -593,9 +607,9 @@ class LocationUserViews(APIView):
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
            
             if my_token:
-                data = LocationModel.objects.get(pk=pk)
+                data = ProductModel.objects.get(pk=pk)
               
-                serializer = LocationModelSer(id,data=data)
+                serializer = ProductModelSer(id,data=data)
                 if data:
                     data.delete()
                     message = {'status':True,'message':'data has been Deleted Successfully'}
@@ -689,12 +703,12 @@ class NearLocations(APIView):
         # lat2=24.90528159995955
         # lon2=67.11237083775545
         nearLocations=list()
-        data=LocationModel.objects.filter(ModalId=id, Status="active")
+        data=ProductModel.objects.filter(ModalId=id, Status="active")
        
         for mydata in data:
             nearDistance=dist(lat,lon,mydata.Lititude,mydata.Longitude)
             if nearDistance <=10:
-                serData=LocationModelSer(mydata)
+                serData=ProductModelSer(mydata)
                 nearLocations.append(serData.data)
                 # print("location is ",json.dumps(nearDistance))
 
@@ -857,3 +871,112 @@ class LoginUser(APIView):
             message = {'status':'false','message':'Invalid Credential'}
             return Response(message)
         # return Response({'data':'sucess'})
+
+
+
+class OrderView(APIView):
+    def get(self, request , id):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            if my_token:
+                data=ProductModel.objects.get(pk=id)
+                serData=OrderProductModelSer(data, many=False)
+                return Response({'status':True,'data':serData.data})
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+         return Response({'status':False,'message':str(e)})
+
+    def post(self,request,  format=None):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            print(request.data)
+            if my_token:
+                
+                dataset={
+                'FirstName':request.data['FirstName'],
+                'LastName':request.data['LastName'],
+                'Email':request.data['Email'],
+                'ContactNo':request.data['ContactNo'],
+                'Address':request.data['Address'],
+                'Product':request.data['Product'],
+                'Price':float(request.data['Price']),
+                'Qty':int(request.data['Qty']),
+                'TotalPrice':float(request.data['TotalPrice']),
+                'User':my_token['id'],
+
+                }
+                
+       
+                serializer = OrderAddSer(data=dataset)
+                # print(dataset)
+                if serializer.is_valid():
+                    serializer.save()
+                    data=serializer.validated_data['Product']
+                    print("the data about ser is",data.UserId.VendorId)
+                   
+                    channel=f"user{data.UserId.VendorId}"
+                    print("the channel is",channel)
+                    pusher_client.trigger(channel, 'my-event', {'message':"hello"})
+                    message = {'status':True,'message':'Your order has been Add Sucessfully. we will contact you soon'}
+                
+                    return Response(message)
+                else:
+                    print("the error is")
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+            
+
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+            print("the e is",e)
+            return Response({'status':False,'message':str(e)})
+
+       
+
+class VendorOrders(APIView):
+     def get(self, request):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            if my_token:
+               
+                data=OrderModel.objects.all().order_by('-pk')
+                serData=OrderSer(data, many=True)
+                return Response({'status':True,'data':serData.data})
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+         return Response({'status':False,'message':str(e)})
+    
+     def put(self, request, pk ,format=None):
+       
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+           
+            if my_token:
+                if request.data['tab']=="locationstatus":
+                   
+
+                    data = OrderModel.objects.get(pk=pk)
+                  
+                    if data:
+                    
+                        data.Status=request.data['status']
+                        data.save()
+                        message = {'status':True,'message':'Status has been change Successfully'}
+                        return Response(message)
+               
+
+
+            else:
+                return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+            return Response({'status':False,'message':str(e)})
+
+
+  

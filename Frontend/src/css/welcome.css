@@ -13,6 +13,13 @@
     top: 29%;
 
 }
+.order-logo{
+    
+    position:relative;
+    left: 1%;
+    top: 10%;
+
+}
 
 .xl-font{
     font-size:50px;
@@ -93,3 +100,26 @@
     top: 29%;
 
 }
+
+
+/* vendor tabs start*/
+.vendor-tab .nav-item{
+    width:20%;
+   
+}
+.vendor-tab .nav-tabs .nav-item .nav-link{
+    padding:20px 0;
+    width:100%;
+    background-image: linear-gradient(to right top, #3b4253, #3a4152, #394052, #384051, #373f51);
+    color:#fff !important;
+    font-size:14px !important;
+}
+.vendor-tab .nav-tabs .nav-item .nav-link.active{
+    background-image: linear-gradient(to right top, #3626e7, #3e2eeb, #4635ef, #4d3cf3, #5443f7) ;
+    color:#fff !important;
+}
+.vendor-tab .nav-tabs {
+    margin-bottom: 1rem !important;
+    
+}
+/* vendor tabs end*/

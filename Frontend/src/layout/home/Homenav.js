@@ -18,9 +18,9 @@ export default function Homenav({shwoBox}) {
 
   <Navbar.Collapse id="responsive-navbar-nav">
     <Nav  className="ml-auto">
-      <Nav.Link href="javascript:void(0)" onClick={()=>myBox()}>Category</Nav.Link>
+    
       {/* <Nav.Link to="/login">Login / Register</Nav.Link> */}
-      <Link className="nav-link active" to="/login">Login / Register</Link>
+      <Link className="nav-link active" to="/category">Category</Link>
       
     </Nav>
   

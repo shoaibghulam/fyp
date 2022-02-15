@@ -6,7 +6,7 @@ export default function Panel(props) {
     return (
         <>
          
-{localStorage.getItem("usertoken") !== null ?
+{localStorage.getItem("vendorToken") !== null ?
 <section>
    <PanelNavbar />
    

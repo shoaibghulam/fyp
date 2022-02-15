@@ -8,7 +8,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import {Helmet} from "react-helmet";
 const  UserHome=() =>{
-  let token = `Bearer ` + localStorage.getItem("usertoken")
+  let token = `Bearer ` + localStorage.getItem("vendorToken")
   const [data,setData]=useState([]);
   const [modalData,setModalData]=useState([]);
   const[dataPk,setDataPk]=useState('')
@@ -19,6 +19,8 @@ const  UserHome=() =>{
   const[Description,setDescription]=useState('')
   const[Address,setAddress]=useState('')
   const[WebsiteLink,setWebsiteLink]=useState('')
+  const[qty,setQty]=useState('')
+  const[price,setPrice]=useState('')
   const[ModalId,setModalId]=useState('')
   const[ChangeStatus,setChangeStatus]=useState('')
   const locationData=(data)=>{
@@ -43,6 +45,8 @@ const  UserHome=() =>{
    formdata.append("ContactNo",ContactNo);
    formdata.append("Description",Description);
    formdata.append("Address",Address);
+   formdata.append("qty",qty);
+   formdata.append("Price",price);
    formdata.append("ModalId",ModalId);
    formdata.append("WebsiteLink",WebsiteLink);
    axios({
@@ -89,6 +93,8 @@ const  UserHome=() =>{
    formdata.append("ContactNo",ContactNo);
    formdata.append("Description",Description);
    formdata.append("Address",Address);
+   formdata.append("qty",qty);
+   formdata.append("Price",price);
    formdata.append("ModalId",ModalId);
    formdata.append("WebsiteLink",WebsiteLink);
    axios({
@@ -253,6 +259,8 @@ const  UserHome=() =>{
                           <th>Contact No</th>
                           <th>Description</th>
                            <th>Address</th>
+                           <th>Qty</th>
+                           <th>Price</th>
                           <th>Modal</th>
                           <th>User</th>
                           <th>Website</th>
@@ -284,6 +292,8 @@ const  UserHome=() =>{
  <td>{e.ContactNo}</td>
  <td> <a href="javascript:void(0)" onClick={()=>setDescription(e.Description)} data-toggle="modal" data-target="#modal-desc">View Description</a></td>
  <td>{e.Address}</td>
+ <td>{e.qty}</td>
+ <td>{e.Price}</td>
  <td>{e.ModalId['ModalTitle']}</td>
  <td>{e.UserId['AgencyName']}</td>
  <td><a href={e.WebsiteLink}>{e.WebsiteLink}</a></td>
@@ -313,6 +323,8 @@ const  UserHome=() =>{
           setContactNo(e.ContactNo)
           setDescription(e.Description)
           setAddress(e.Address)
+          setAddress(e.qty)
+          setAddress(e.Price)
           setModalId(e.ModalId['ModalId'])
           setWebsiteLink(e.WebsiteLink)
         }}
@@ -371,6 +383,14 @@ const  UserHome=() =>{
                 <Finder  currentAddress={locationData} latLng={latLng} />
               </div>
 
+              <div className="form-group ">
+                <label className="form-label" htmlFor="basic-icon-default-fullname">Qty</label>
+                <input type="number" step="0.00001" className="form-control dt-full-name"  placeholder="Qty" onChange={(e)=>setQty(e.target.value)} value={qty} required/>
+              </div>
+              <div className="form-group ">
+                <label className="form-label" htmlFor="basic-icon-default-fullname">Price</label>
+                <input type="number" step="0.00001" className="form-control dt-full-name"  placeholder="Price" onChange={(e)=>setPrice(e.target.value)} value={price} required/>
+              </div>
               <div className="form-group d-none">
                 <label className="form-label" htmlFor="basic-icon-default-fullname">Latitude</label>
                 <input type="number" step="0.00001" className="form-control dt-full-name"  placeholder="Latitude" onChange={(e)=>setLititude(e.target.value)} value={Lititude} required/>
@@ -447,7 +467,14 @@ const  UserHome=() =>{
                 <label className="form-label" htmlFor="basic-icon-default-fullname">Latitude</label>
                 <input type="number" className="form-control dt-full-name"  placeholder="Latitude" step="0.00001" onChange={(e)=>setLititude(e.target.value)} value={Lititude} required/>
               </div>
-
+              <div className="form-group d-none">
+                <label className="form-label" htmlFor="basic-icon-default-fullname">Qty</label>
+                <input type="number" step="0.00001" className="form-control dt-full-name"  placeholder="Latitude" onChange={(e)=>setQty(e.target.value)} value={qty} required/>
+              </div>
+              <div className="form-group d-none">
+                <label className="form-label" htmlFor="basic-icon-default-fullname">Price</label>
+                <input type="number" step="0.00001" className="form-control dt-full-name"  placeholder="Latitude" onChange={(e)=>setPrice(e.target.value)} value={price} required/>
+              </div>
               <div className="form-group d-none">
                 <label className="form-label" htmlFor="basic-icon-default-fullname">Longitude</label>
                 <input type="number" className="form-control dt-full-name"  placeholder="Longitude" onChange={(e)=>setLongitude(e.target.value)} value={Longitude} step="0.00001" required/>

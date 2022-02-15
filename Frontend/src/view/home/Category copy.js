@@ -1,15 +1,11 @@
 import react,{useEffect,useState} from 'react';
 import axios from 'axios';
-import Pusher from 'pusher-js';
-
 import url from '../../baseUrl';
 import swal from 'sweetalert';
 import { Link} from 'react-router-dom';
 import useGeoLocation from "../../components/useGeoLocation";
 import '../../css/welcome.css'
-const pusher = new Pusher('197d770c643a357ecfcf', {
-  cluster: 'ap2',
-});
+
 const Category=()=>{
     const location = useGeoLocation();
     const [data,setData]=useState([]);
@@ -34,14 +30,7 @@ const Category=()=>{
        allData();
      
    },[data.length])
-   
-   var channel = pusher.subscribe('chat');
-   channel.bind('my-event', function(data) {
-      console.log("event data is",data)
-   })
-   pusher.unsubscribe('chat');
-   Pusher.logToConsole = true;
-
+  
     return(
         <>
         <div className="container-fluid">

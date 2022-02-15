@@ -4,13 +4,13 @@ import GoogleMapReact from 'google-map-react';
 import url from '../../baseUrl';
 import axios from 'axios';
 import {AiFillCloseCircle ,AiFillContacts } from 'react-icons/ai';
-import {BiMap } from 'react-icons/bi';
+import {BiMap , BiDollar } from 'react-icons/bi';
 import {FaFirefoxBrowser } from 'react-icons/fa';
 import Loader from '../../components/Loader'
 
 import Homenav from '../../layout/home/Homenav';
 import {Helmet} from "react-helmet";
-import { useLocation } from 'react-router-dom'
+import { useLocation , Link } from 'react-router-dom'
 
 const Home=()=> {
   const locat = useLocation()
@@ -120,14 +120,14 @@ const showBox=()=>{
           {locations.map((e)=>(
  <div
  className="pin"
- key={e.LocationId}
+ key={e.ProductId}
  lat={e.Lititude}
  lng={e.Longitude}
  onClick={()=>{ setSingleData(e)}}
  data-toggle="modal" data-target="#modal-desc"
 > 
     <img src="assets/marker.png" style={{margin:0, padding:0,}}/> <br></br>
-  <span className="text-bold">{e.LocationTitle}</span>
+  <span className="text-bold">{e.ProductTitle}</span>
    </div>
           ))}
          
@@ -142,21 +142,29 @@ const showBox=()=>{
           <form className="add-new-user modal-content pt-0" >
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
             <div className="modal-header mb-1">
-              <h5 className="modal-title" id="exampleModalLabel">Location </h5>
+              <h5 className="modal-title" id="exampleModalLabel">Product Details </h5>
             </div>
             <div className="modal-body flex-grow-1">
           <div className=""  >
           <div className=" ">
-    <h1 className="text-center mb-3">{singleData.LocationTitle}</h1>
+    <h1 className="text-center mb-3">{singleData.ProductTitle}</h1>
     <div className="mb-4" dangerouslySetInnerHTML={{__html: singleData.Description}}></div>
   
     <ul className='list-unstyled info-quote'>
+      <li><strong><BiDollar size={20} /> Price:</strong>{singleData.Price}.Rs</li>
       <li><strong><BiMap size={20} /> Address:</strong>{singleData.Address}</li>
       <li><strong><AiFillContacts size={20} /> Contact NO:</strong> {singleData.ContactNo}</li>
       {/* <li><strong>Email:</strong> {singleData.UserId.Email}</li> */}
       <li><strong><FaFirefoxBrowser size={20} /> Website: </strong><a href={singleData.WebsiteLink}>{singleData.WebsiteLink}</a></li>
      
     </ul>
+    <div className="text-center">
+
+    <Link to={{
+    pathname:"/order_now",
+    state:{ id:singleData.ProductId, location:location}
+}} className="btn btn-primary">Order Now</Link>
+    </div>
   </div>
           </div>
               

@@ -2,7 +2,7 @@ import react,{useEffect,useState} from 'react';
 import axios from 'axios';
 import url from '../../baseUrl';
 import swal from 'sweetalert';
-import { useHistory} from 'react-router-dom';
+import { useHistory,Link} from 'react-router-dom';
 import '../../css/welcome.css'
 import {Tabs, Tab} from 'react-bootstrap'
 const Welcome=()=>{
@@ -143,6 +143,9 @@ const useLogin = (e)=>{
             
            </div>
            <div className="col-12 col-md-6 section-b">
+             <div className="text-right mt-2 mr-auto">
+               <Link className="btn btn-primary" to="/vendor_login">Vendor Login</Link>
+             </div>
                <div className="mt-100 text-center welcome-text">
                <h1 className="text-black">Hello Welcome Back.</h1>
                <h4 className="text-black">Log in with your data that you entered during Your registration.</h4>
