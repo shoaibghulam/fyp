@@ -21,6 +21,7 @@ import Category from './view/home/Category';
 import UserRoute from './layout/dashboard/UserRoute';
 import Order from './view/home/Order';
 import VendorOrders from './view/users/VendorOrders';
+import Orders from './view/dashboard/Orders';
 
 
 
@@ -52,6 +53,7 @@ function App() {
       <Route path="/verify/:token/:id" exact component={Verify} />
 
      <Main exact path="/admin" comp={Admin}/>
+     <Main exact path="/orders" comp={Orders}/>
      <Main  path="/modal" comp={Model}/>
      <Main  path="/locations" comp={Data}/>
      <Main  path="/users" comp={Users}/>
@@ -73,7 +75,7 @@ function App() {
 
      {/* user panel dashboard start */}
      <Panel path="/panel" comp={VendorOrders} />
-     {/* <Panel path="/panel" comp={UserHome} /> */}
+     <Panel path="/products" comp={UserHome} />
      <Panel path="/agencysettings" comp={AgencySettings} />
      {/* user panel dashboard end */}
     </Switch>

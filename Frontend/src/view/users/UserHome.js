@@ -211,7 +211,7 @@ const  UserHome=() =>{
     return (
         <>
   <Helmet>
-    <title>Anti Medicare System  Panel</title>
+    <title>Anti Medicare System  Products</title>
   </Helmet>
       {/* BEGIN: Content*/}
       <div className="app-content content ">
@@ -222,12 +222,12 @@ const  UserHome=() =>{
             <div className="content-header-left col-md-9 col-12 mb-2">
               <div className="row breadcrumbs-top">
                 <div className="col-12">
-                  <h2 className="content-header-title float-left mb-0">Coordinates</h2>
+                  <h2 className="content-header-title float-left mb-0">Products</h2>
                   <div className="breadcrumb-wrapper">
                     <ol className="breadcrumb">
-                      <li className="breadcrumb-item"><a href="index.html">Home</a>
+                      <li className="breadcrumb-item"><a href="#">Home</a>
                       </li>
-                      <li className="breadcrumb-item active">Modal Data
+                      <li className="breadcrumb-item active">Products
                       </li>
                     </ol>
                   </div>
@@ -235,7 +235,7 @@ const  UserHome=() =>{
               </div>
             </div>
             <div className="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-           <button className="btn btn-primary" data-toggle="modal" data-target="#modals-slide-in">Add Coordinates</button>
+           <button className="btn btn-primary" data-toggle="modal" data-target="#modals-slide-in">Add Product</button>
         
             </div>
           </div>

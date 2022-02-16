@@ -256,12 +256,12 @@ const  Data=() =>{
             <div className="content-header-left col-md-9 col-12 mb-2">
               <div className="row breadcrumbs-top">
                 <div className="col-12">
-                  <h2 className="content-header-title float-left mb-0">Coordinates</h2>
+                  <h2 className="content-header-title float-left mb-0">Products</h2>
                   <div className="breadcrumb-wrapper">
                     <ol className="breadcrumb">
-                      <li className="breadcrumb-item"><a href="index.html">Home</a>
+                      <li className="breadcrumb-item"><a href="#">Home</a>
                       </li>
-                      <li className="breadcrumb-item active">Modal Data
+                      <li className="breadcrumb-item active">Products
                       </li>
                     </ol>
                   </div>
@@ -269,7 +269,7 @@ const  Data=() =>{
               </div>
             </div>
             <div className="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-           <button className="btn btn-primary" data-toggle="modal" data-target="#modals-slide-in">Add Coordinates</button>
+           <button className="btn btn-primary mb-2" data-toggle="modal" data-target="#modals-slide-in">Add Product</button>
         
             </div>
           </div>
@@ -315,7 +315,7 @@ const  Data=() =>{
                         {data.map((e)=>(
  <tr>
  <td>
- {e.LocationTitle}
+ {e.ProductTitle}
   
 </td>
  <td>{e.Lititude}</td>
@@ -346,8 +346,8 @@ const  Data=() =>{
         onClick={()=>{
           
 
-          setDataPk(e.LocationId)
-          setLocationTitle(e.LocationTitle)
+          setDataPk(e.ProductId)
+          setLocationTitle(e.ProductTitle)
           setLititude(e.Lititude)
           setLongitude(e.Longitude)
           setContactNo(e.ContactNo)
@@ -360,14 +360,14 @@ const  Data=() =>{
          <i data-feather="edit-2" className="mr-50" />
          <span>Edit</span>
        </a>
-       <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteLocation(e.LocationId)}>
+       <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteLocation(e.ProductId)}>
          <i data-feather="trash" className="mr-50" />
          <span>Delete</span>
        </a>
        <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
-          setDataPk(e.LocationId)
+          setDataPk(e.ProductId)
         }}
        >
          <i data-feather="trash" className="mr-50" />
@@ -406,7 +406,7 @@ const  Data=() =>{
           <form className="add-new-user modal-content pt-0" onSubmit={addLocation}>
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
             <div className="modal-header mb-1">
-              <h5 className="modal-title" id="exampleModalLabel">Locations </h5>
+              <h5 className="modal-title" id="exampleModalLabel">Products </h5>
             </div>
             <div className="modal-body flex-grow-1">
               <div className="form-group">
@@ -478,7 +478,7 @@ const  Data=() =>{
           <form className="add-new-user modal-content pt-0" onSubmit={editLocation}>
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
             <div className="modal-header mb-1">
-              <h5 className="modal-title" id="exampleModalLabel">Edit Locations </h5>
+              <h5 className="modal-title" id="exampleModalLabel">Edit Product </h5>
             </div>
             <div className="modal-body flex-grow-1">
               <div className="form-group">

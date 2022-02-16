@@ -942,7 +942,49 @@ class VendorOrders(APIView):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
             if my_token:
+                print("My token is",my_token)
+                data=OrderModel.objects.filter(Product__UserId=my_token['id']).order_by('-pk')
+                serData=OrderSer(data, many=True)
+                return Response({'status':True,'data':serData.data})
+            else:
+                  return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+         return Response({'status':False,'message':str(e)})
+    
+     def put(self, request, pk ,format=None):
+       
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+           
+            if my_token:
+                if request.data['tab']=="locationstatus":
+                   
+
+                    data = OrderModel.objects.get(pk=pk)
+                  
+                    if data:
+                    
+                        data.Status=request.data['status']
+                        data.save()
+                        message = {'status':True,'message':'Status has been change Successfully'}
+                        return Response(message)
                
+
+
+            else:
+                return Response({'status':False,'message':'token is expire'})
+
+        except Exception as e:
+            return Response({'status':False,'message':str(e)})
+
+
+class AdminOrders(APIView):
+     def get(self, request):
+        try:
+            my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
+            if my_token:
+             
                 data=OrderModel.objects.all().order_by('-pk')
                 serData=OrderSer(data, many=True)
                 return Response({'status':True,'data':serData.data})

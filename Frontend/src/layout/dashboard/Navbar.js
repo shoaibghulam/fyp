@@ -162,12 +162,17 @@ export default function Navbar() {
               </Link>
             
               </li>
+              <li className="nav-item">
+                <Link   to="/orders" className="d-flex align-items-center"><i data-feather="home" /><span className="menu-title text-truncate" >Orders</span>
+              </Link>
+            
+              </li>
             
               <li className=" nav-item">
                 <Link className="d-flex align-items-center" to="/modal"><i data-feather="mail" /><span className="menu-title text-truncate" data-i18n="Email">Model</span></Link>
               </li>
               <li className=" nav-item">
-                <Link className="d-flex align-items-center" to="/locations"><i data-feather="message-square" /><span className="menu-title text-truncate" data-i18n="Chat">Product Location</span></Link>
+                <Link className="d-flex align-items-center" to="/locations"><i data-feather="message-square" /><span className="menu-title text-truncate" data-i18n="Chat">Products</span></Link>
               </li>
               <li className=" nav-item">
                 <Link className="d-flex align-items-center" to="/users">

@@ -33,6 +33,7 @@ path('order_now/<int:id>',OrderView.as_view(),name="order_now"),
 path('order_now',OrderView.as_view(),name="order_now"),
 path('vendor_orders',VendorOrders.as_view(),name="vendor_orders"),
 path('vendor_orders/<int:pk>',VendorOrders.as_view(),name="vendor_orders"),
+path('admin_orders',AdminOrders.as_view(),name="admin_orders"),
 
 # user Account end
 ]

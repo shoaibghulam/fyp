@@ -5,6 +5,7 @@ import axios from 'axios';
 import url from '../../baseUrl';
 import {BiDotsVertical} from 'react-icons/bi';
 import Loader from '../../components/Loader';
+import { Helmet } from 'react-helmet';
 
 const  Admin=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
@@ -187,6 +188,9 @@ const  Admin=() =>{
     },[data.length])
     return (
         <>
+         <Helmet>
+    <title>Anti Medicare System  Admin Panel</title>
+  </Helmet>
          {/* {loader ? <Loader /> :null }     */}
         {/* shoaib BEGIN: Content*/}
         <div className="app-content content ">

@@ -10,8 +10,8 @@ import {Tabs, Tab} from 'react-bootstrap'
 const pusher = new Pusher('197d770c643a357ecfcf', {
     cluster: 'ap2',
   });
-const  VendorOrders=() =>{
-  let token = `Bearer ` + localStorage.getItem("vendorToken")
+const  Orders=() =>{
+  let token = `Bearer ` + localStorage.getItem("admintoken")
   const [newData,setNewData]=useState([]);
   const [acceptedDate,setAcceptedDate]=useState([]);
   const [pendingPayment,setPendingPayment]=useState([]);
@@ -28,7 +28,7 @@ const  VendorOrders=() =>{
   const allData=()=>{
     axios({
       method: 'GET',
-      url: `${url.url}/api/vendor_orders`,
+      url: `${url.url}/api/admin_orders`,
       
       headers: {
   
@@ -40,7 +40,7 @@ const  VendorOrders=() =>{
       var data= response.data;
       if(data.status==true){
         if(data.data.length>0){
-         
+         console.log("the orders data is",data.data)
 
           setNewData(
             data.data.filter((e)=>{
@@ -69,7 +69,7 @@ const  VendorOrders=() =>{
             })
           );
           
-       
+          
 
          
         }
@@ -295,6 +295,7 @@ const  VendorOrders=() =>{
          
                       <tr>
 
+                          <th>Vendor</th>
                           <th>Product</th>
                           <th>Status</th>
                           <th>First Name</th>
@@ -317,7 +318,11 @@ const  VendorOrders=() =>{
  
                         {newData.map((e)=>(
  <tr>
+     <td>
+     {e.Product['UserId'].AgencyName}
+     </td>
  <td >
+ 
  {e.Product['ProductTitle']}
   
 </td>
@@ -393,6 +398,7 @@ const  VendorOrders=() =>{
          
                       <tr>
 
+                          <th>Vendor</th>
                           <th>Product</th>
                           <th>Status</th>
                           <th>First Name</th>
@@ -415,6 +421,9 @@ const  VendorOrders=() =>{
  
                         {acceptedDate.map((e)=>(
  <tr>
+       <td>
+     {e.Product['UserId'].AgencyName}
+     </td>
  <td >
  {e.Product['ProductTitle']}
   
@@ -491,6 +500,7 @@ const  VendorOrders=() =>{
       
                    <tr>
 
+                       <th>Vendor</th>
                        <th>Product</th>
                        <th>Status</th>
                        <th>First Name</th>
@@ -513,6 +523,9 @@ const  VendorOrders=() =>{
 
                      {pendingPayment.map((e)=>(
 <tr>
+<td>
+     {e.Product['UserId'].AgencyName}
+     </td>
 <td >
 {e.Product['ProductTitle']}
 
@@ -589,6 +602,7 @@ const  VendorOrders=() =>{
       
                    <tr>
 
+                       <th>Vendor</th>
                        <th>Product</th>
                        <th>Status</th>
                        <th>First Name</th>
@@ -611,6 +625,9 @@ const  VendorOrders=() =>{
 
                      {completed.map((e)=>(
 <tr>
+<td>
+     {e.Product['UserId'].AgencyName}
+     </td>
 <td >
 {e.Product['ProductTitle']}
 
@@ -688,6 +705,7 @@ const  VendorOrders=() =>{
       
                    <tr>
 
+                       <th>Vendor</th>
                        <th>Product</th>
                        <th>Status</th>
                        <th>First Name</th>
@@ -710,6 +728,9 @@ const  VendorOrders=() =>{
 
                      {cancel.map((e)=>(
 <tr>
+<td>
+     {e.Product['UserId'].AgencyName}
+     </td>
 <td >
 {e.Product['ProductTitle']}
 
@@ -820,4 +841,4 @@ const  VendorOrders=() =>{
         </>
     )
 }
-export default VendorOrders;
+export default Orders;
