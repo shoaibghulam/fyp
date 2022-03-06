@@ -76,7 +76,7 @@ const Category=()=>{
                 
                     </a>
                     <h3>Select Category👋</h3>
-
+                   
               </div>
             
            </div>
@@ -112,9 +112,12 @@ className="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-12">
                </div>
 
            </div>
+          
        </section>
         </div>
-     
+        <footer className="text-center col-md-12 ">
+     <p> Copyright 2022 by Federal Urdu University of Arts, Sciences & Technology. All Rights Reserved.</p>
+      </footer>
         </>
     )
 }

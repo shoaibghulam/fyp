@@ -14,6 +14,7 @@ const  Model=() =>{
   const [ContactNo,setContactNo]=useState('')
   const [Address,setAddress]=useState('')
   const[ChangeStatus,setChangeStatus]=useState('')
+  const[viewData,setViewData]=useState([])
    // add User Api Start
    const addUser=(e)=>{
    
@@ -233,12 +234,12 @@ const  Model=() =>{
             <div className="content-header-left col-md-9 col-12 mb-2">
               <div className="row breadcrumbs-top">
                 <div className="col-12">
-                  <h2 className="content-header-title float-left mb-0">Users</h2>
+                  <h2 className="content-header-title float-left mb-0">Vendor</h2>
                   <div className="breadcrumb-wrapper">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item"><a href="index.html">Home</a>
                       </li>
-                      <li className="breadcrumb-item active">Users
+                      <li className="breadcrumb-item active">Vendor
                       </li>
                     </ol>
                   </div>
@@ -246,7 +247,7 @@ const  Model=() =>{
               </div>
             </div>
             <div className="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-           <button className="btn btn-primary" data-toggle="modal" data-target="#modals-slide-in">Add Users</button>
+           <button className="btn btn-primary" data-toggle="modal" data-target="#modals-slide-in">Add Vendor</button>
         
             </div>
           </div>
@@ -268,8 +269,7 @@ const  Model=() =>{
                     <th>Username</th>
                     <th>Email</th>
                     <th>Contact No</th>
-                    <th>Address</th>
-                    <th>Date</th>
+                   
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -294,12 +294,7 @@ const  Model=() =>{
    <td>
     {e.ContactNo}
    </td>
-   <td>
-    {e.Address}
-   </td>
-   <td>
-    {e.RegistrationDate}
-   </td>
+ 
    <td>
      {e.Status =='pending' ?
      <span className="badge badge-pill badge-light-info mr-1">Pending</span>
@@ -315,10 +310,19 @@ const  Model=() =>{
          <BiDotsVertical size={35} />
        </button>
        <div className="dropdown-menu">
+       <a className="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          
+          setViewData(e);
+        }}
+       >
+         <i data-feather="edit-2" className="mr-50" />
+         <span>View</span>
+       </a>
          <a className="dropdown-item" href="javascript:void(0);"
          data-toggle="modal" data-target="#modals-slide-edit"
          onClick={()=>{
-          setUserPk(e.UserId)
+          setUserPk(e.VendorId)
           setAgencyName(e.AgencyName)
           setUsername(e.Username)
           setEmail(e.Email)
@@ -330,14 +334,15 @@ const  Model=() =>{
            <i data-feather="edit-2" className="mr-50" />
            <span>Edit</span>
          </a>
-         <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteUser(e.UserId)}>
+         <a className="dropdown-item" href="javascript:void(0);" onClick={()=>deleteUser(e.VendorId)}>
            <i data-feather="trash" className="mr-50" />
            <span>Delete</span>
          </a>
          <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
-          setUserPk(e.UserId)
+          setUserPk(e.VendorId)
+       
         }}
        >
          <i data-feather="trash" className="mr-50" />
@@ -494,6 +499,66 @@ const  Model=() =>{
         </div>
       </div>
       {/* Modal to edit new user Ends*/}
+         {/* Modal to Viw Product Data starts*/}
+         <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-view">
+        <div className="modal-dialog modal-lg">
+            
+          <div className="add-new-user modal-content pt-0">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">View Details</h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+      
+
+       
+              <table className="model-table">
+              
+
+
+
+
+
+                <tr>
+                  <th>ID</th>
+                  <td>{viewData.VendorId}</td>
+                </tr>
+                <tr>
+                  <th>Agency Name</th>
+                  <td>{viewData.AgencyName}</td>
+                </tr>
+                <tr>
+                  <th>Username</th>
+                  <td>{viewData.Username}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td>{viewData.Email}</td>
+                </tr>
+                <tr>
+                  <th>Contact No</th>
+                  <td>{viewData.ContactNo}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{viewData.Address}</td>
+                </tr>
+                <tr>
+                  <th>Registration Date</th>
+                  <td>{viewData.RegistrationDate}</td>
+                </tr>
+             
+              </table>
+            
+
+
+
+
+             </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal to Viw Product Data  Ends*/}
         </>
     )
 }

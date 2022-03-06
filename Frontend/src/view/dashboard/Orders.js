@@ -53,11 +53,7 @@ const  Orders=() =>{
                 return e.Status == "Accepted"
             })
           );
-          setPendingPayment(
-            data.data.filter((e)=>{
-                return e.Status == "Pending payment"
-            })
-          );
+        
           setCompleted(
             data.data.filter((e)=>{
                 return e.Status == "Completed"
@@ -205,7 +201,7 @@ const  Orders=() =>{
                               </div>
                             </div>
                           </div>
-                          <div className="col-xl-2 col-sm-6 col-12 mb-2 mb-xl-0">
+                          <div className="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
                             <div className="media">
                               <div className="avatar bg-light-info mr-2">
                                 <div className="avatar-content">
@@ -220,22 +216,8 @@ const  Orders=() =>{
                               </div>
                             </div>
                           </div>
-                          <div className="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
-                            <div className="media">
-                              <div className="avatar bg-light-danger mr-2">
-                                <div className="avatar-content">
-                                  <i data-feather="box" className="avatar-icon" />
-                                </div>
-                              </div>
-                              <div className="media-body my-auto">
-                              
-
-                                <h4 className="font-weight-bolder mb-0 ml-2">{pendingPayment?.length}</h4>
-                                <p className="card-text font-small-3 mb-0">Pending Payment</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-xl-2 col-sm-6 col-12">
+                       
+                          <div className="col-xl-3 col-sm-6 col-12">
                             <div className="media">
                               <div className="avatar bg-light-success mr-2">
                                 <div className="avatar-content">
@@ -250,7 +232,7 @@ const  Orders=() =>{
                             
                             </div>
                           </div>
-                          <div className="col-xl-2 col-sm-6 col-12">
+                          <div className="col-xl-3 col-sm-6 col-12">
                             <div className="media">
                               <div className="avatar bg-light-success mr-2">
                                 <div className="avatar-content">
@@ -483,108 +465,7 @@ const  Orders=() =>{
     
           </div>
   </Tab>
-  <Tab eventKey="Pendingpayment" title="Pending payment">
-  <div className="content-body">
-         
-         {/* Striped rows start 9999*/}
-         <div className="row" id="table-striped">
-      
-
-           <div className="col-12">
-             <div className="card">
-              
-               <div className="card-body p-0 m-0">
-               <div className="table-responsive">
-                 <table className="table table-striped">
-                   <thead>
-      
-                   <tr>
-
-                       <th>Vendor</th>
-                       <th>Product</th>
-                       <th>Status</th>
-                       <th>First Name</th>
-                       <th>Last Name</th>
-                       <th>Email</th>
-                       <th>Contact No</th>
-                        <th>Address</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                       <th>Total Price</th>
-                       <th>User</th>
-                       <th>Date</th>
-                    
-                   
-                       <th>Actions</th>
-                     </tr>
-                   </thead>
-                   <tbody >
-                
-
-                     {pendingPayment.map((e)=>(
-<tr>
-<td>
-     {e.Product['UserId'].AgencyName}
-     </td>
-<td >
-{e.Product['ProductTitle']}
-
-</td>
-<td>
-  
-  <span className="badge badge-pill badge-light-success mr-1">{e.Status}</span>
-  
-  </td>
-<td>{e.FirstName}</td>
-
-<td>{e.LastName}</td>
-<td>{e.Email}</td>
-<td> {e.ContactNo}</td>
-<td>{e.Address}</td>
-<td>{e.Qty}</td>
-<td>{e.Price}</td>
-
-<td>{e.TotalPrice}</td>
-<td>{e.User}</td>
-<td>{e.Date}</td>
-
-<td>
-<div className="dropdown">
-  <button type="button" className="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-  <BiDotsVertical size={35} />
-  </button>
-  <div className="dropdown-menu">
-  <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
-     onClick={()=>{
-       setChangeStatus(e.Status)
-       setDataPk(e.OrderId)
-     }}
-    >
-      <i data-feather="trash" className="mr-50" />
-      <span>Change Status</span>
-    </a>
-    </div>
-</div>
-</td>
-</tr>
-                     ))}
-                     
-              
-                   </tbody>
-                 </table>
-               </div>
-               </div>
-              
-             </div>
-           </div>
-         </div>
-         {/* Striped rows end 9999*/}
-        
-    
-       
  
-       </div>
-  </Tab>
   <Tab eventKey="Completed" title="Completed">
   <div className="content-body">
          
@@ -816,7 +697,7 @@ const  Orders=() =>{
                  <option >Select Modal name</option>
                  <option value="New">New</option>
                  <option value="Accepted">Accepted</option>
-                 <option value="Pending payment">Pending payment</option>
+                
                  <option value="Completed">Completed</option>
                  <option value="Cancel">Cancel</option>
                 

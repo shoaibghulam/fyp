@@ -33,7 +33,7 @@ function App() {
     setTimeout(()=>{
       setLoader(false)
 
-    },3000)
+    },6000)
   },[])
 //  alert(location.coordinates.lat)
  

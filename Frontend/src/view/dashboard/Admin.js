@@ -16,6 +16,7 @@ const  Admin=() =>{
   const [userData,setUserData]=useState([])
   const[Description,setDescription]=useState('')
   const [loader,setLoader]=useState(true);
+  const[viewData,setViewData]=useState([])
     // Change Status location start
     const changeStatus=(e)=>{
       e.preventDefault();
@@ -237,8 +238,8 @@ const  Admin=() =>{
                                 </div>
                               </div>
                               <div className="media-body my-auto">
-                                <h4 className="font-weight-bolder mb-0">230k</h4>
-                                <p className="card-text font-small-3 mb-0">Vistors</p>
+                                <h4 className="font-weight-bolder mb-0">10</h4>
+                                <p className="card-text font-small-3 mb-0">Orders</p>
                               </div>
                             </div>
                           </div>
@@ -250,7 +251,7 @@ const  Admin=() =>{
                                 </div>
                               </div>
                               <div className="media-body my-auto">
-                                <h4 className="font-weight-bolder mb-0">8.549k</h4>
+                                <h4 className="font-weight-bolder mb-0">20</h4>
                                 <p className="card-text font-small-3 mb-0">Users</p>
                               </div>
                             </div>
@@ -263,8 +264,8 @@ const  Admin=() =>{
                                 </div>
                               </div>
                               <div className="media-body my-auto">
-                                <h4 className="font-weight-bolder mb-0">1.423k</h4>
-                                <p className="card-text font-small-3 mb-0">Coordinates</p>
+                                <h4 className="font-weight-bolder mb-0">5</h4>
+                                <p className="card-text font-small-3 mb-0">Vendors</p>
                               </div>
                             </div>
                           </div>
@@ -276,7 +277,7 @@ const  Admin=() =>{
                                 </div>
                               </div>
                               <div className="media-body my-auto">
-                                <h4 className="font-weight-bolder mb-0">45</h4>
+                                <h4 className="font-weight-bolder mb-0">4</h4>
                                 <p className="card-text font-small-3 mb-0">Modals</p>
                               </div>
                             </div>
@@ -293,7 +294,7 @@ const  Admin=() =>{
         <div className="col-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">New Location</h4>
+              <h4 className="card-title">New Product</h4>
             </div>
             <div className="card-body">
               
@@ -305,14 +306,13 @@ const  Admin=() =>{
                       <tr>
                        
                           <th>Title</th>
-                          <th>Latitude</th>
-                          <th>Longitude</th>
+                         
                           <th>Contact No</th>
-                          <th>Description</th>
+                        
                            <th>Address</th>
                           <th>Modal</th>
                           <th>User</th>
-                          <th>Website</th>
+                       
                           <th>Status</th>
                       
                           <th>Actions</th>
@@ -332,18 +332,16 @@ const  Admin=() =>{
                         {data.map((e)=>(
  <tr>
  <td>
- {e.LocationTitle}
+ {e.ProductTitle}
   
 </td>
- <td>{e.Lititude}</td>
 
- <td>{e.Longitude}</td>
  <td>{e.ContactNo}</td>
- <td> <a href="javascript:void(0)" onClick={()=>setDescription(e.Description)} data-toggle="modal" data-target="#modal-desc">View Description</a></td>
+
  <td>{e.Address}</td>
  <td>{e.ModalId['ModalTitle']}</td>
  <td>{e.UserId['AgencyName']}</td>
- <td><a href={e.WebsiteLink}>{e.WebsiteLink}</a></td>
+ 
  <td>
      {e.Status =='pending' ?
      <span className="badge badge-pill badge-light-info mr-1">Pending</span>
@@ -361,6 +359,14 @@ const  Admin=() =>{
      <div className="dropdown-menu">
        
 
+       <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
        <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
@@ -407,8 +413,7 @@ const  Admin=() =>{
                     <th>Username</th>
                     <th>Email</th>
                     <th>Contact No</th>
-                    <th>Address</th>
-                    <th>Date</th>
+                
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -433,12 +438,7 @@ const  Admin=() =>{
    <td>
     {e.ContactNo}
    </td>
-   <td>
-    {e.Address}
-   </td>
-   <td>
-    {e.RegistrationDate}
-   </td>
+ 
    <td>
      {e.Status =='pending' ?
      <span className="badge badge-pill badge-light-info mr-1">Pending</span>
@@ -454,12 +454,21 @@ const  Admin=() =>{
          <BiDotsVertical size={35} />
        </button>
        <div className="dropdown-menu">
-    
+       <a className="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#modals-slide-view-user"
+        onClick={()=>{
+          
+          setViewData(e);
+        }}
+       >
+         <i data-feather="edit-2" className="mr-50" />
+         <span>View</span>
+       </a>
       
          <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-user"
         onClick={()=>{
           setChangeStatus(e.Status)
-          setUserPk(e.UserId)
+          setUserPk(e.VendorId)
+         
         }}
        >
          <i data-feather="trash" className="mr-50" />
@@ -553,25 +562,139 @@ const  Admin=() =>{
         </div>
       </div>
       {/* Modal to edit new user Ends*/}
-           {/* Modal to edit new user starts*/}
-           <div className="modal modal-slide-in new-user-modal fade" id="modal-desc">
-        <div className="modal-dialog ">
+         
+        
+           {/* Modal to Viw Product Data starts*/}
+           <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-view">
+        <div className="modal-dialog modal-lg">
             
-          <form className="add-new-user modal-content pt-0" >
+          <div className="add-new-user modal-content pt-0">
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
             <div className="modal-header mb-1">
-              <h5 className="modal-title" id="exampleModalLabel">Description </h5>
+              <h5 className="modal-title" id="exampleModalLabel">View Details</h5>
             </div>
             <div className="modal-body flex-grow-1">
-          <div className="mt-4"  dangerouslySetInnerHTML={{__html:Description}}>
+      
 
+       
+              <table className="model-table">
+                <tr>
+                  <th>ID</th>
+                  <td>{viewData.ProductId}</td>
+                </tr>
+                <tr>
+                  <th>Title</th>
+                  <td>{viewData.ProductTitle}</td>
+                </tr>
+                <tr>
+                  <th>Vendor</th>
+                  <td>
+                    {viewData.UserId ? viewData.UserId['AgencyName'] : null }
+                   
+                    </td>
+                </tr>
+                <tr>
+                  <th>Model</th>
+                  <td>
+                    {viewData.ModalId ? viewData.ModalId['ModalTitle'] : null}
+                   </td>
+                </tr>
+                <tr>
+                  <th>Contact No</th>
+                  <td>{viewData.ContactNo}</td>
+                </tr>
+               
+                <tr>
+                  <th>Price</th>
+                  <td>{viewData.Price} .Rs</td>
+                </tr>
+                <tr>
+                  <th>Qty</th>
+                  <td>{viewData.qty}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{viewData.Address}</td>
+                </tr>
+                <tr>
+                  <th>Website</th>
+                  <td><a href={viewData.WebsiteLink}>{viewData.WebsiteLink}</a></td>
+                </tr>
+                <tr>
+                  <th>Description</th>
+                  <td  dangerouslySetInnerHTML={{__html:viewData.Description}}></td>
+                </tr>
+              </table>
+            
+
+
+
+
+             </div>
           </div>
-              
-            </div>
-          </form>
         </div>
       </div>
-        
+      {/* Modal to Viw Product Data  Ends*/}
+            {/* Modal to Viw User Data starts*/}
+            <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-view-user">
+        <div className="modal-dialog modal-lg">
+            
+          <div className="add-new-user modal-content pt-0">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">View Details</h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+      
+
+       
+              <table className="model-table">
+              
+
+
+
+
+
+                <tr>
+                  <th>ID</th>
+                  <td>{viewData.VendorId}</td>
+                </tr>
+                <tr>
+                  <th>Agency Name</th>
+                  <td>{viewData.AgencyName}</td>
+                </tr>
+                <tr>
+                  <th>Username</th>
+                  <td>{viewData.Username}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td>{viewData.Email}</td>
+                </tr>
+                <tr>
+                  <th>Contact No</th>
+                  <td>{viewData.ContactNo}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{viewData.Address}</td>
+                </tr>
+                <tr>
+                  <th>Registration Date</th>
+                  <td>{viewData.RegistrationDate}</td>
+                </tr>
+             
+              </table>
+            
+
+
+
+
+             </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal to Viw user Data  Ends*/}
         </>
     )
 }

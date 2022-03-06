@@ -44,10 +44,10 @@ const useRegister = (e)=>{
         .then((response) => {
          
           var data=response.data;
-       
+        
+          swal("successfully!", data.message, "success");
         if(data.status==true){
             clearInput()
-          swal("successfully!", data.message, "success");
           
           history.push("/")
         }
@@ -140,7 +140,9 @@ const useLogin = (e)=>{
                     <h3>Welcome to Anti Medi Care👋</h3>
 
               </div>
-            
+              <footer className="text-center col-md-12 home-footer">
+     <p> Copyright 2022 by Federal Urdu University of Arts, Sciences & Technology. All Rights Reserved.</p>
+      </footer>
            </div>
            <div className="col-12 col-md-6 section-b">
              <div className="text-right mt-2 mr-auto">
@@ -238,6 +240,7 @@ const useLogin = (e)=>{
                </div>
 
            </div>
+            
        </section>
         </div>
      

@@ -23,6 +23,7 @@ const  UserHome=() =>{
   const[price,setPrice]=useState('')
   const[ModalId,setModalId]=useState('')
   const[ChangeStatus,setChangeStatus]=useState('')
+  const[viewData,setViewData]=useState([])
   const locationData=(data)=>{
     setAddress(data)
  
@@ -254,16 +255,14 @@ const  UserHome=() =>{
                       <tr>
                        
                           <th>Title</th>
-                          <th>Latitude</th>
-                          <th>Longitude</th>
+                         
                           <th>Contact No</th>
-                          <th>Description</th>
+                        
                            <th>Address</th>
                            <th>Qty</th>
                            <th>Price</th>
                           <th>Modal</th>
-                          <th>User</th>
-                          <th>Website</th>
+                        
                           <th>Status</th>
                       
                           <th>Actions</th>
@@ -283,20 +282,18 @@ const  UserHome=() =>{
                         {data.map((e)=>(
  <tr>
  <td>
- {e.LocationTitle}
+ {e.ProductTitle}
   
 </td>
- <td>{e.Lititude}</td>
 
- <td>{e.Longitude}</td>
  <td>{e.ContactNo}</td>
- <td> <a href="javascript:void(0)" onClick={()=>setDescription(e.Description)} data-toggle="modal" data-target="#modal-desc">View Description</a></td>
+
  <td>{e.Address}</td>
  <td>{e.qty}</td>
  <td>{e.Price}</td>
  <td>{e.ModalId['ModalTitle']}</td>
- <td>{e.UserId['AgencyName']}</td>
- <td><a href={e.WebsiteLink}>{e.WebsiteLink}</a></td>
+
+
  <td>
      {e.Status =='pending' ?
      <span className="badge badge-pill badge-light-info mr-1">Pending</span>
@@ -312,6 +309,14 @@ const  UserHome=() =>{
      <BiDotsVertical size={35} />
      </button>
      <div className="dropdown-menu">
+     <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
        <a className="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#modals-slide-edit"
         onClick={()=>{
           
@@ -543,7 +548,77 @@ const  UserHome=() =>{
         </div>
       </div>
       {/* Modal to edit new user Ends*/}
-        
+           {/* Modal to Viw Product Data starts*/}
+           <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-view">
+        <div className="modal-dialog modal-lg">
+            
+          <div className="add-new-user modal-content pt-0">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">View Details</h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+      
+
+       
+              <table className="model-table">
+                <tr>
+                  <th>ID</th>
+                  <td>{viewData.ProductId}</td>
+                </tr>
+                <tr>
+                  <th>Title</th>
+                  <td>{viewData.ProductTitle}</td>
+                </tr>
+                <tr>
+                  <th>Vendor</th>
+                  <td>
+                    {viewData.UserId ? viewData.UserId['AgencyName'] : null }
+                   
+                    </td>
+                </tr>
+                <tr>
+                  <th>Model</th>
+                  <td>
+                    {viewData.ModalId ? viewData.ModalId['ModalTitle'] : null}
+                   </td>
+                </tr>
+                <tr>
+                  <th>Contact No</th>
+                  <td>{viewData.ContactNo}</td>
+                </tr>
+               
+                <tr>
+                  <th>Price</th>
+                  <td>{viewData.Price} .Rs</td>
+                </tr>
+                <tr>
+                  <th>Qty</th>
+                  <td>{viewData.qty}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{viewData.Address}</td>
+                </tr>
+                <tr>
+                  <th>Website</th>
+                  <td><a href={viewData.WebsiteLink}>{viewData.WebsiteLink}</a></td>
+                </tr>
+                <tr>
+                  <th>Description</th>
+                  <td  dangerouslySetInnerHTML={{__html:viewData.Description}}></td>
+                </tr>
+              </table>
+            
+
+
+
+
+             </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal to Viw Product Data  Ends*/}
         </>
     )
 }

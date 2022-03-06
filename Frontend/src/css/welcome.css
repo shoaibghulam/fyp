@@ -104,7 +104,7 @@
 
 /* vendor tabs start*/
 .vendor-tab .nav-item{
-    width:20%;
+    width:25%;
    
 }
 .vendor-tab .nav-tabs .nav-item .nav-link{
@@ -123,3 +123,44 @@
     
 }
 /* vendor tabs end*/
+
+
+.model-table{
+   width:100%;
+}
+.model-table tr td{
+    width:50%;
+ 
+}
+.model-table tr td , .model-table tr th{
+    padding:10px 0;
+}
+.model-table tr {
+   
+    /* display:inline; */
+    border-bottom: 2px solid rgb(153, 147, 147);
+}
+
+.custom-footer{
+    padding: 2px 0;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    left: 129px;
+    flex-shrink: 0;
+    width: 50%;
+    font-weight: bold;
+    margin: 0 auto;
+}
+.home-footer{
+    padding: 2px 0;
+    text-align: center;
+    color: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 9px;
+  
+    font-weight: bold;
+    
+    text-align: left !important;
+}

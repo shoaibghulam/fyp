@@ -3,6 +3,7 @@ import {  Route,Redirect } from 'react-router-dom';
 
 import Model from '../../view/dashboard/Model';
 import Navbar from './Navbar';
+import Footer from './Footer';
 export default function Main(props) {
     return (
         <>
@@ -11,7 +12,8 @@ export default function Main(props) {
 <section>
    <Navbar />
    
-   <Route  path={props.path} component={props.comp} />   
+   <Route  path={props.path} component={props.comp} />  
+    <Footer />
    </section>
 : 
 <Redirect to="/404" />

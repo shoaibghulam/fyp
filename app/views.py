@@ -29,6 +29,7 @@ tokenkey = config('jwttoken')
 
 # Create your views here.
 BASE="http://127.0.0.1:3000/"
+
 def emailverify(subject,to,link,message):
 
     from_email="komaljan4@gmail.com"
@@ -40,6 +41,36 @@ def emailverify(subject,to,link,message):
                 <div style='width:300px; margin:0 auto;'> <a href='{link}' style=" background-color:#0066ff; border: none;  color: white; padding: 15px 32px;  text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; font-family: PT Sans, sans-serif;" >click here</a>
             </div>
                 '''
+
+    msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+def notificationEmail(subject,to,message):
+
+    from_email="komaljan4@gmail.com"
+        
+        
+    html_content = f'''
+                <h1 style="text-align:center; font-family: 'Montserrat', sans-serif;">{subject}</h1>
+                    
+                <div style='width:100%; font-size:15px; margin:0 auto;'>
+               <p> {message}</p>
+            </div>
+                '''
+
+    msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+
+
+def orderComplateEmail(subject,to,message):
+
+    from_email="komaljan4@gmail.com"
+        
+        
+    html_content = message
 
     msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
@@ -759,7 +790,7 @@ class UserRegister(APIView):
         serializer = UserModelSer(data=dataset)
         if serializer.is_valid():
             serializer.save()
-            message = {'status':True,'message':'Account has been Register SuccessFully'}
+            responsemessage = {'status':True,'message':'Account has been Register SuccessFully'}
          
             subject="Please Verify Your Accounts"
             id=serializer.data['UserId']
@@ -768,7 +799,7 @@ class UserRegister(APIView):
             link=f"{BASE}/verify/{token}/{id}"
             message=f"Hi, {serializer.data['FirstName']} Please Verify Your Account"
             emailverify(subject,to,link,message)
-            return Response(message)
+            return Response(responsemessage)
            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -963,13 +994,153 @@ class VendorOrders(APIView):
 
                     data = OrderModel.objects.get(pk=pk)
                   
-                    if data:
+                    if data.Status !="Cancel":
                     
                         data.Status=request.data['status']
                         data.save()
+                        if data.Status=="Accepted":
+                            subject=f"Order Id {data.pk} has been accepted"
+                            msg=f'''
+                                <html>
+
+<body style="background-color:#e2e1e0;font-family: Open Sans, sans-serif;font-size:100%;font-weight:400;line-height:1.4;color:#000;">
+  
+  <table style="max-width:670px;margin:50px auto 10px;background-color:#fff;padding:50px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);-moz-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); border-top: solid 10px green;">
+ 
+    <thead>
+
+      <tr>
+        <th style="text-align:left;">Anti Medi care Order Accepted</th>
+        <th style="text-align:right;font-weight:400;">{data.Date}</th>
+      </tr>
+      <tr>
+      <td colspan="2">Your Order has been accpeted pleaser vist our Office to Complate your Order Process. <br/><b>Note: If process is not Complate the order has been cancel after 6 hours</b></td>
+      </tr>
+    </thead>
+   
+    <tbody>
+      <tr>
+        <td style="height:35px;"></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border: solid 1px #ddd; padding:10px 20px;">
+          <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:150px">Order status</span><b style="color:green;font-weight:normal;margin:0">Accepted</b></p>
+          <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">ORDER ID</span> {data.pk}</p>
+          <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">Order amount</span> Rs. {data.TotalPrice}</p>
+          <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">Vendor </span> {data.Product.UserId.AgencyName}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="height:35px;"></td>
+      </tr>
+      <tr>
+        <td style="width:50%;padding:20px;vertical-align:top">
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">Name</span> {data.FirstName} {data.LastName}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email</span> {data.Email}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Phone</span> {data.ContactNo}</p>
+         
+        </td>
+        <td style="width:50%;padding:20px;vertical-align:top">
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Address</span> {data.Address}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Qty</span> {data.Qty}</p>
+         
+        </td>
+      </tr>
+     
+    
+    </tbody>
+    <tfooter>
+      <tr>
+        <td colspan="2" style="font-size:14px;padding:50px 15px 0 15px;">
+          <strong style="display:block;margin:0 0 10px 0;">Regards</strong> {data.Product.UserId.AgencyName}<br> {data.Product.UserId.Address}<br><br>
+          <b>Phone:</b> {data.Product.UserId.ContactNo}<br>
+          <b>Email:</b> {data.Product.UserId.Email}
+        </td>
+      </tr>
+    </tfooter>
+  </table>
+</body>
+
+</html>
+                            '''
+                            
+                            notificationEmail(subject,data.Email,msg)
+                        elif data.Status =="Completed":
+                            msg=f'''
+                                <html>
+
+<body style="background-color:#e2e1e0;font-family: Open Sans, sans-serif;font-size:100%;font-weight:400;line-height:1.4;color:#000;">
+  <table style="max-width:670px;margin:50px auto 10px;background-color:#fff;padding:50px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);-moz-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); border-top: solid 10px green;">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Anti Medi care</th>
+        <th style="text-align:right;font-weight:400;">{data.Date}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="height:35px;"></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border: solid 1px #ddd; padding:10px 20px;">
+          <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:150px">Order status</span><b style="color:green;font-weight:normal;margin:0">Success</b></p>
+          <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">ORDER ID</span> {data.pk}</p>
+          <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">Order amount</span> Rs. {data.TotalPrice}</p>
+          <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">Vendor </span> {data.Product.UserId.AgencyName}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="height:35px;"></td>
+      </tr>
+      <tr>
+        <td style="width:50%;padding:20px;vertical-align:top">
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">Name</span> {data.FirstName} {data.LastName}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email</span> {data.Email}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Phone</span> {data.ContactNo}</p>
+         
+        </td>
+        <td style="width:50%;padding:20px;vertical-align:top">
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Address</span> {data.Address}</p>
+          <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Qty</span> {data.Qty}</p>
+         
+        </td>
+      </tr>
+     
+    
+    </tbody>
+    <tfooter>
+      <tr>
+        <td colspan="2" style="font-size:14px;padding:50px 15px 0 15px;">
+          <strong style="display:block;margin:0 0 10px 0;">Regards</strong> {data.Product.UserId.AgencyName}<br> {data.Product.UserId.Address}<br><br>
+          <b>Phone:</b> {data.Product.UserId.ContactNo}<br>
+          <b>Email:</b> {data.Product.UserId.Email}
+        </td>
+      </tr>
+    </tfooter>
+  </table>
+</body>
+
+</html>
+                            '''
+                            orderComplateEmail("Order Completed",data.Email,msg)
+                      
+                      
+                        elif data.Status=="Cancel":
+                            subject=f"Order Id {data.pk} has been Cancel"
+                            message=f"Dear {data.FirstName} {data.LastName} your order {data.Product.ProductTitle} has been Cancel."
+                            notificationEmail(subject,data.Email,message)
+                            updateqty=ProductModel.objects.get(pk=data.Product.pk)
+                            updateqty.qty=updateqty.qty + data.Qty
+                            updateqty.save()
+                      
+                      
                         message = {'status':True,'message':'Status has been change Successfully'}
                         return Response(message)
-               
+
+                    else:
+                        message = {'status':True,'message':'Order is Already been canceled'}
+                        return Response(message)
+
 
 
             else:
@@ -1009,6 +1180,9 @@ class AdminOrders(APIView):
                     
                         data.Status=request.data['status']
                         data.save()
+                        #  notificationEmail(subject,to,message):
+                       
+                        
                         message = {'status':True,'message':'Status has been change Successfully'}
                         return Response(message)
                

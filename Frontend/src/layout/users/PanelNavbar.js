@@ -4,7 +4,7 @@ export default function Navbar() {
   const history = useHistory();
   const logout=()=>{
     localStorage.removeItem('usertoken');
-    history.push('/login')
+    history.push('/vendor_login')
   }
     return (
         <>

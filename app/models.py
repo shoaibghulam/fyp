@@ -6,7 +6,6 @@ from django.utils import timezone
 ORDER_STATUS = [
     ('New', 'New'),
     ('Accepted', 'Accepted'),
-    ('Pending payment', 'Pending payment'),
     ('Completed', 'Completed'),
     ('Cancel', 'Cancel'),
     

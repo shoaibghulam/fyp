@@ -17,12 +17,9 @@ const  VendorOrders=() =>{
   const [pendingPayment,setPendingPayment]=useState([]);
   const [completed,setCompleted]=useState([]);
   const [cancel,setCancel]=useState([]);
-
-
   const[dataPk,setDataPk]=useState('')
-
   const[ChangeStatus,setChangeStatus]=useState('')
-
+  const[viewData,setViewData]=useState([])
 
   // get modal dropdown end
   const allData=()=>{
@@ -53,11 +50,7 @@ const  VendorOrders=() =>{
                 return e.Status == "Accepted"
             })
           );
-          setPendingPayment(
-            data.data.filter((e)=>{
-                return e.Status == "Pending payment"
-            })
-          );
+         
           setCompleted(
             data.data.filter((e)=>{
                 return e.Status == "Completed"
@@ -205,7 +198,7 @@ const  VendorOrders=() =>{
                               </div>
                             </div>
                           </div>
-                          <div className="col-xl-2 col-sm-6 col-12 mb-2 mb-xl-0">
+                          <div className="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
                             <div className="media">
                               <div className="avatar bg-light-info mr-2">
                                 <div className="avatar-content">
@@ -220,22 +213,8 @@ const  VendorOrders=() =>{
                               </div>
                             </div>
                           </div>
-                          <div className="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
-                            <div className="media">
-                              <div className="avatar bg-light-danger mr-2">
-                                <div className="avatar-content">
-                                  <i data-feather="box" className="avatar-icon" />
-                                </div>
-                              </div>
-                              <div className="media-body my-auto">
-                              
-
-                                <h4 className="font-weight-bolder mb-0 ml-2">{pendingPayment?.length}</h4>
-                                <p className="card-text font-small-3 mb-0">Pending Payment</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-xl-2 col-sm-6 col-12">
+                      
+                          <div className="col-xl-3 col-sm-6 col-12">
                             <div className="media">
                               <div className="avatar bg-light-success mr-2">
                                 <div className="avatar-content">
@@ -250,7 +229,7 @@ const  VendorOrders=() =>{
                             
                             </div>
                           </div>
-                          <div className="col-xl-2 col-sm-6 col-12">
+                          <div className="col-xl-3 col-sm-6 col-12">
                             <div className="media">
                               <div className="avatar bg-light-success mr-2">
                                 <div className="avatar-content">
@@ -299,15 +278,12 @@ const  VendorOrders=() =>{
                           <th>Status</th>
                           <th>First Name</th>
                           <th>Last Name</th>
-                          <th>Email</th>
-                          <th>Contact No</th>
+                        
                            <th>Address</th>
                            <th>Qty</th>
                            <th>Price</th>
                           <th>Total Price</th>
-                          <th>User</th>
-                          <th>Date</th>
-                       
+                      
                       
                           <th>Actions</th>
                         </tr>
@@ -329,15 +305,13 @@ const  VendorOrders=() =>{
  <td>{e.FirstName}</td>
 
  <td>{e.LastName}</td>
- <td>{e.Email}</td>
- <td> {e.ContactNo}</td>
+
  <td>{e.Address}</td>
  <td>{e.Qty}</td>
- <td>{e.Price}</td>
+ <td>{e.Price} .Rs</td>
 
- <td>{e.TotalPrice}</td>
- <td>{e.User}</td>
- <td>{e.Date}</td>
+ <td>{e.TotalPrice} .Rs</td>
+
 
  <td>
    <div className="dropdown">
@@ -345,6 +319,14 @@ const  VendorOrders=() =>{
      <BiDotsVertical size={35} />
      </button>
      <div className="dropdown-menu">
+     <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
      <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
@@ -397,16 +379,12 @@ const  VendorOrders=() =>{
                           <th>Status</th>
                           <th>First Name</th>
                           <th>Last Name</th>
-                          <th>Email</th>
-                          <th>Contact No</th>
+                       
                            <th>Address</th>
                            <th>Qty</th>
                            <th>Price</th>
                           <th>Total Price</th>
-                          <th>User</th>
-                          <th>Date</th>
-                       
-                      
+                        
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -427,15 +405,13 @@ const  VendorOrders=() =>{
  <td>{e.FirstName}</td>
 
  <td>{e.LastName}</td>
- <td>{e.Email}</td>
- <td> {e.ContactNo}</td>
- <td>{e.Address}</td>
- <td>{e.Qty}</td>
- <td>{e.Price}</td>
 
- <td>{e.TotalPrice}</td>
- <td>{e.User}</td>
- <td>{e.Date}</td>
+ <td>{e.Address}</td>
+ <td>{e.Qty} </td>
+ <td>{e.Price} .Rs</td>
+
+ <td>{e.TotalPrice} .Rs</td>
+
 
  <td>
    <div className="dropdown">
@@ -443,6 +419,14 @@ const  VendorOrders=() =>{
      <BiDotsVertical size={35} />
      </button>
      <div className="dropdown-menu">
+     <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
      <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
         onClick={()=>{
           setChangeStatus(e.Status)
@@ -474,104 +458,7 @@ const  VendorOrders=() =>{
     
           </div>
   </Tab>
-  <Tab eventKey="Pendingpayment" title="Pending payment">
-  <div className="content-body">
-         
-         {/* Striped rows start 9999*/}
-         <div className="row" id="table-striped">
-      
 
-           <div className="col-12">
-             <div className="card">
-              
-               <div className="card-body p-0 m-0">
-               <div className="table-responsive">
-                 <table className="table table-striped">
-                   <thead>
-      
-                   <tr>
-
-                       <th>Product</th>
-                       <th>Status</th>
-                       <th>First Name</th>
-                       <th>Last Name</th>
-                       <th>Email</th>
-                       <th>Contact No</th>
-                        <th>Address</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                       <th>Total Price</th>
-                       <th>User</th>
-                       <th>Date</th>
-                    
-                   
-                       <th>Actions</th>
-                     </tr>
-                   </thead>
-                   <tbody >
-                
-
-                     {pendingPayment.map((e)=>(
-<tr>
-<td >
-{e.Product['ProductTitle']}
-
-</td>
-<td>
-  
-  <span className="badge badge-pill badge-light-success mr-1">{e.Status}</span>
-  
-  </td>
-<td>{e.FirstName}</td>
-
-<td>{e.LastName}</td>
-<td>{e.Email}</td>
-<td> {e.ContactNo}</td>
-<td>{e.Address}</td>
-<td>{e.Qty}</td>
-<td>{e.Price}</td>
-
-<td>{e.TotalPrice}</td>
-<td>{e.User}</td>
-<td>{e.Date}</td>
-
-<td>
-<div className="dropdown">
-  <button type="button" className="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-  <BiDotsVertical size={35} />
-  </button>
-  <div className="dropdown-menu">
-  <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
-     onClick={()=>{
-       setChangeStatus(e.Status)
-       setDataPk(e.OrderId)
-     }}
-    >
-      <i data-feather="trash" className="mr-50" />
-      <span>Change Status</span>
-    </a>
-    </div>
-</div>
-</td>
-</tr>
-                     ))}
-                     
-              
-                   </tbody>
-                 </table>
-               </div>
-               </div>
-              
-             </div>
-           </div>
-         </div>
-         {/* Striped rows end 9999*/}
-        
-    
-       
- 
-       </div>
-  </Tab>
   <Tab eventKey="Completed" title="Completed">
   <div className="content-body">
          
@@ -593,16 +480,12 @@ const  VendorOrders=() =>{
                        <th>Status</th>
                        <th>First Name</th>
                        <th>Last Name</th>
-                       <th>Email</th>
-                       <th>Contact No</th>
+                       
                         <th>Address</th>
                         <th>Qty</th>
                         <th>Price</th>
                        <th>Total Price</th>
-                       <th>User</th>
-                       <th>Date</th>
-                    
-                   
+                      
                        <th>Actions</th>
                      </tr>
                    </thead>
@@ -623,15 +506,13 @@ const  VendorOrders=() =>{
 <td>{e.FirstName}</td>
 
 <td>{e.LastName}</td>
-<td>{e.Email}</td>
-<td> {e.ContactNo}</td>
+
 <td>{e.Address}</td>
 <td>{e.Qty}</td>
-<td>{e.Price}</td>
+<td>{e.Price} .Rs</td>
 
-<td>{e.TotalPrice}</td>
-<td>{e.User}</td>
-<td>{e.Date}</td>
+<td>{e.TotalPrice} .Rs</td>
+
 
 <td>
 <div className="dropdown">
@@ -639,6 +520,14 @@ const  VendorOrders=() =>{
   <BiDotsVertical size={35} />
   </button>
   <div className="dropdown-menu">
+  <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
   <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
      onClick={()=>{
        setChangeStatus(e.Status)
@@ -692,14 +581,12 @@ const  VendorOrders=() =>{
                        <th>Status</th>
                        <th>First Name</th>
                        <th>Last Name</th>
-                       <th>Email</th>
-                       <th>Contact No</th>
+                    
                         <th>Address</th>
                         <th>Qty</th>
                         <th>Price</th>
                        <th>Total Price</th>
-                       <th>User</th>
-                       <th>Date</th>
+                    
                     
                    
                        <th>Actions</th>
@@ -722,15 +609,13 @@ const  VendorOrders=() =>{
 <td>{e.FirstName}</td>
 
 <td>{e.LastName}</td>
-<td>{e.Email}</td>
-<td> {e.ContactNo}</td>
+
 <td>{e.Address}</td>
 <td>{e.Qty}</td>
-<td>{e.Price}</td>
+<td>{e.Price} .Rs</td>
 
-<td>{e.TotalPrice}</td>
-<td>{e.User}</td>
-<td>{e.Date}</td>
+<td>{e.TotalPrice} .Rs</td>
+
 
 <td>
 <div className="dropdown">
@@ -738,6 +623,14 @@ const  VendorOrders=() =>{
   <BiDotsVertical size={35} />
   </button>
   <div className="dropdown-menu">
+  <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-view"
+        onClick={()=>{
+          setViewData(e);
+        }}
+       >
+         <i data-feather="trash" className="mr-50" />
+         <span>View</span>
+       </a>
   <a className="dropdown-item" href="javascript:void(0);"  data-toggle="modal" data-target="#modals-slide-status"
      onClick={()=>{
        setChangeStatus(e.Status)
@@ -795,7 +688,7 @@ const  VendorOrders=() =>{
                  <option >Select Modal name</option>
                  <option value="New">New</option>
                  <option value="Accepted">Accepted</option>
-                 <option value="Pending payment">Pending payment</option>
+               
                  <option value="Completed">Completed</option>
                  <option value="Cancel">Cancel</option>
                 
@@ -811,7 +704,88 @@ const  VendorOrders=() =>{
         </div>
       </div>
       {/* Modal to edit new user Ends*/}
+      {/* Modal to Viw Product Data starts*/}
+      <div className="modal modal-slide-in new-user-modal fade" id="modals-slide-view">
+        <div className="modal-dialog modal-lg">
+            
+          <div className="add-new-user modal-content pt-0">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">×</button>
+            <div className="modal-header mb-1">
+              <h5 className="modal-title" id="exampleModalLabel">View Details</h5>
+            </div>
+            <div className="modal-body flex-grow-1">
+      
+            
 
+
+
+
+
+       
+              <table className="model-table">
+                <tr>
+                  <th>Order Id</th>
+                  <td>{viewData.OrderId}</td>
+                </tr>
+                <tr>
+                  <th>First Name</th>
+                  <td>{viewData.FirstName}</td>
+                </tr>
+                <tr>
+                  <th>Last Name</th>
+                  <td>{viewData.LastName}</td>
+                </tr>
+               
+               
+                <tr>
+                  <th>Email</th>
+                  <td>{viewData.Email}</td>
+                </tr>
+                <tr>
+                  <th>Product</th>
+                  <td>
+                    {viewData.Product ? viewData.Product['ProductTitle'] : null }
+                   
+                    </td>
+                </tr>
+              
+                <tr>
+                  <th>Contact No</th>
+                  <td>{viewData.ContactNo}</td>
+                </tr>
+                <tr>
+                  <th>Date</th>
+                  <td>{viewData.Date}</td>
+                </tr>
+               
+                <tr>
+                  <th>Price</th>
+                  <td>{viewData.Price} .Rs</td>
+                </tr>
+                <tr>
+                  <th>Qty</th>
+                  <td>{viewData.Qty}</td>
+                </tr>
+                <tr>
+                  <th>Total Price</th>
+                  <td>{viewData.TotalPrice} .Rs</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{viewData.Address}</td>
+                </tr>
+                
+              </table>
+            
+
+
+
+
+             </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal to Viw Product Data  Ends*/}
      
         
          

@@ -134,7 +134,9 @@ const showBox=()=>{
         
         </GoogleMapReact> 
       </div>
-
+      <footer className="text-center col-md-12 p-1">
+     <p> Copyright 2022 by Federal Urdu University of Arts, Sciences & Technology. All Rights Reserved.</p>
+      </footer>
  {/* Modal to edit new user starts*/}
  <div className="modal modal-slide-in new-user-modal fade" id="modal-desc">
         <div className="modal-dialog modal-full">

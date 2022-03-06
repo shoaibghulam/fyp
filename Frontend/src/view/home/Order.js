@@ -198,7 +198,7 @@ const Order=()=>{
               key: "AIzaSyAbnkyiEEVFi1tGsTNc1TmWpRmLbFHSqAs"
             }}
             defaultCenter={location.coordinates}
-            defaultZoom={11}
+            defaultZoom={9}
             center={location.coordinates}
             yesIWantToUseGoogleMapApiInternals
             onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
@@ -254,8 +254,11 @@ const Order=()=>{
 
            </div>
        </section>
+       
         </div>
-     
+     <footer className="text-center col-md-12 ">
+     <p> Copyright 2022 by Federal Urdu University of Arts, Sciences & Technology. All Rights Reserved.</p>
+      </footer>
         </>
     )
 }
