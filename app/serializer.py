@@ -6,16 +6,16 @@ from .models import *
 class AdminModelSer(serializers.ModelSerializer):
     class Meta:
         model = AdminModel
-        fields = '__all__'
-    
+        exclude = ('Password', 'Token')
+
 class UserModelSer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = '__all__'
+        exclude = ('Password', 'Token')
 class VendorModelSer(serializers.ModelSerializer):
     class Meta:
         model = VendorModel
-        fields = '__all__'
+        exclude = ('Password',)
     
 
 class DataModelsSer(serializers.ModelSerializer):

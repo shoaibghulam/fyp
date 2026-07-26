@@ -3,7 +3,9 @@ import { Link,useHistory  } from 'react-router-dom';
 export default function Navbar() {
   const history = useHistory();
   const logout=()=>{
-    localStorage.removeItem('usertoken');
+    localStorage.removeItem('vendorToken');
+    localStorage.removeItem('vendorid');
+    localStorage.removeItem('agencyName');
     history.push('/vendor_login')
   }
     return (

@@ -7,6 +7,7 @@ import {BiDotsVertical} from 'react-icons/bi';
 import Finder from '../../components/Finder';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
+import sanitizeHtml from '../../lib/sanitize';
 const  Data=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
   const [data,setData]=useState([]);
@@ -608,7 +609,7 @@ const  Data=() =>{
                 </tr>
                 <tr>
                   <th>Description</th>
-                  <td  dangerouslySetInnerHTML={{__html:viewData.Description}}></td>
+                  <td  dangerouslySetInnerHTML={{__html:sanitizeHtml(viewData.Description)}}></td>
                 </tr>
               </table>
             

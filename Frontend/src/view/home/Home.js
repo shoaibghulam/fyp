@@ -11,10 +11,11 @@ import Loader from '../../components/Loader'
 import Homenav from '../../layout/home/Homenav';
 import {Helmet} from "react-helmet";
 import { useLocation , Link } from 'react-router-dom'
+import sanitizeHtml from '../../lib/sanitize';
 
 const Home=()=> {
   const locat = useLocation()
-  const {modalId , location}= locat.state;
+  const {modalId , location}= locat.state || {};
   // const { from } = locat.state
   const [show, setShow] = useState(false);
   const [data,setData]=useState([]);
@@ -150,7 +151,7 @@ const showBox=()=>{
           <div className=""  >
           <div className=" ">
     <h1 className="text-center mb-3">{singleData.ProductTitle}</h1>
-    <div className="mb-4" dangerouslySetInnerHTML={{__html: singleData.Description}}></div>
+    <div className="mb-4" dangerouslySetInnerHTML={{__html: sanitizeHtml(singleData.Description)}}></div>
   
     <ul className='list-unstyled info-quote'>
       <li><strong><BiDollar size={20} /> Price:</strong>{singleData.Price}.Rs</li>

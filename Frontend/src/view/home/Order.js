@@ -9,6 +9,7 @@ import { useLocation,Link,useHistory} from 'react-router-dom';
 import GoogleMapReact from "google-map-react";
 import $ from 'jquery';
 import '../../css/welcome.css'
+import sanitizeHtml from '../../lib/sanitize';
 
 const Order=()=>{
   const google = window.google;
@@ -16,7 +17,7 @@ const Order=()=>{
 
     let token = `Bearer ` + localStorage.getItem("usertoken")
     const locat = useLocation()
-    const {id, location}= locat.state;
+    const {id, location}= locat.state || {};
     const  [currentLocation,setCurrentLocation]=useState({ lat: 40.756795, lng: -73.954298 })
     const [data,setData]=useState([]);
     const [qty,setQty]=useState(1);
@@ -172,7 +173,7 @@ const Order=()=>{
                 
                     </a>
                     <h3>{data.ProductTitle}</h3>
-                    <div className="mb-4 mt-2 text-left" dangerouslySetInnerHTML={{__html: data.Description}}></div>
+                    <div className="mb-4 mt-2 text-left" dangerouslySetInnerHTML={{__html: sanitizeHtml(data.Description)}}></div>
                 <p className="text-left">
                 <ul className='list-unstyled info-quote'>
       <li><strong><BiDollar size={20} /> Price:</strong>{data.Price}.Rs</li>
@@ -237,7 +238,7 @@ const Order=()=>{
     </div>
     <div className="col-12 col-md-3 col-xl-3 form-group">
      <label>Quantity</label>
-     <input type="Number" min={1} max={data.qty}  className="custom-input" placeholder="Enter Contact No" value={qty} onChange={(e)=>{setQty(e.target.value); setTotalPrice(e.target.value*data.Price)}}  required/>
+     <input type="number" min={1} max={data.qty}  className="custom-input" placeholder="Enter Quantity" value={qty} onChange={(e)=>{setQty(e.target.value); setTotalPrice(e.target.value*data.Price)}}  required/>
     </div>
 <div className="col-md-12">
   <p><b>Price: {data.Price}.Rs</b></p>

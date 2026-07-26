@@ -7,6 +7,7 @@ import Finder from '../../components/Finder';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
 import {Helmet} from "react-helmet";
+import sanitizeHtml from '../../lib/sanitize';
 const  UserHome=() =>{
   let token = `Bearer ` + localStorage.getItem("vendorToken")
   const [data,setData]=useState([]);
@@ -328,8 +329,8 @@ const  UserHome=() =>{
           setContactNo(e.ContactNo)
           setDescription(e.Description)
           setAddress(e.Address)
-          setAddress(e.qty)
-          setAddress(e.Price)
+          setQty(e.qty)
+          setPrice(e.Price)
           setModalId(e.ModalId['ModalId'])
           setWebsiteLink(e.WebsiteLink)
         }}
@@ -539,7 +540,7 @@ const  UserHome=() =>{
               <h5 className="modal-title" id="exampleModalLabel">Description </h5>
             </div>
             <div className="modal-body flex-grow-1">
-          <div className="mt-4"  dangerouslySetInnerHTML={{__html:Description}}>
+          <div className="mt-4"  dangerouslySetInnerHTML={{__html:sanitizeHtml(Description)}}>
 
           </div>
               
@@ -606,7 +607,7 @@ const  UserHome=() =>{
                 </tr>
                 <tr>
                   <th>Description</th>
-                  <td  dangerouslySetInnerHTML={{__html:viewData.Description}}></td>
+                  <td  dangerouslySetInnerHTML={{__html:sanitizeHtml(viewData.Description)}}></td>
                 </tr>
               </table>
             

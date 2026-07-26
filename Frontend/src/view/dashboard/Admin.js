@@ -6,6 +6,7 @@ import url from '../../baseUrl';
 import {BiDotsVertical} from 'react-icons/bi';
 import Loader from '../../components/Loader';
 import { Helmet } from 'react-helmet';
+import sanitizeHtml from '../../lib/sanitize';
 
 const  Admin=() =>{
   let token = `Bearer ` + localStorage.getItem("admintoken")
@@ -622,7 +623,7 @@ const  Admin=() =>{
                 </tr>
                 <tr>
                   <th>Description</th>
-                  <td  dangerouslySetInnerHTML={{__html:viewData.Description}}></td>
+                  <td  dangerouslySetInnerHTML={{__html:sanitizeHtml(viewData.Description)}}></td>
                 </tr>
               </table>
             

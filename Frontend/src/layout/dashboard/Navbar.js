@@ -182,7 +182,7 @@ export default function Navbar() {
                 <Link className="d-flex align-items-center" to="/settings"><i data-feather="calendar" /><span className="menu-title text-truncate" data-i18n="settings">Settings </span></Link>
               </li>
               <li className=" nav-item">
-                <Link className="d-flex align-items-center" to="/login"><i data-feather="grid" /><span className="menu-title text-truncate" data-i18n="power">Logout</span></Link>
+                <Link className="d-flex align-items-center" to="/login" onClick={()=>{localStorage.removeItem('admintoken'); localStorage.removeItem('id'); localStorage.removeItem('Fullname');}}><i data-feather="grid" /><span className="menu-title text-truncate" data-i18n="power">Logout</span></Link>
               </li>
             
             

@@ -10,7 +10,8 @@ from app.models import *
 import jwt
 import datetime
 from django.db.models import Q
-import requests 
+from django.db import transaction
+import requests
 import random 
 import json
 from django.core.mail import EmailMultiAlternatives
@@ -19,16 +20,34 @@ from decouple import config
 import pusher
 
 pusher_client = pusher.Pusher(
-  app_id='1347586',
-  key='197d770c643a357ecfcf',
-  secret='8af2becad02f4919b398',
-  cluster='ap2',
+  app_id=config('PUSHER_APP_ID'),
+  key=config('PUSHER_KEY'),
+  secret=config('PUSHER_SECRET'),
+  cluster=config('PUSHER_CLUSTER', default='ap2'),
   ssl=True
 )
 tokenkey = config('jwttoken')
 
 # Create your views here.
 BASE="http://127.0.0.1:3000/"
+
+
+class RoleRequiredMixin:
+    """Defense-in-depth access control: reject the request before it reaches any
+    handler unless the caller's JWT carries the expected `role` claim.
+    Views set `required_role = 'admin' | 'vendor' | 'user'`."""
+    required_role = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.required_role:
+            auth = request.META.get('HTTP_AUTHORIZATION', '')
+            my_token = tokenauth(auth[7:]) if auth.startswith('Bearer ') else False
+            if not my_token or my_token.get('role') != self.required_role:
+                return JsonResponse(
+                    {'status': False, 'message': 'Not authorized for this resource'},
+                    status=403,
+                )
+        return super().dispatch(request, *args, **kwargs)
 
 def emailverify(subject,to,link,message):
 
@@ -79,10 +98,11 @@ def orderComplateEmail(subject,to,message):
 
 
 class LoginVendor(APIView):
+    throttle_scope = 'login'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
-            if my_token:
+            if my_token and my_token.get('role') == 'vendor':
                 data=VendorModel.objects.get(pk=my_token['id'])
                 serData=VendorModelSer(data, many=False)
                 return Response({'status':True,'data':serData.data})
@@ -99,6 +119,7 @@ class LoginVendor(APIView):
                 access_token_payload = {
                 'id': loginQuery.pk,
                 'agencyName':loginQuery.AgencyName,
+                'role':'vendor',
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                 'iat': datetime.datetime.utcnow(),
 
@@ -122,7 +143,7 @@ class RegisterUser(APIView):
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
-            if my_token:
+            if my_token and my_token.get('role') == 'admin':
                 data=VendorModel.objects.all().order_by('-pk')
                 serData=VendorModelSer(data, many=True)
                 return Response({'status':True,'data':serData.data})
@@ -159,9 +180,10 @@ class RegisterUser(APIView):
 
   
     def put(self , request,pk, format=None):
-       
-      
-        
+        auth = request.META.get('HTTP_AUTHORIZATION', '')
+        my_token = tokenauth(auth[7:]) if auth.startswith('Bearer ') else False
+        if not my_token or my_token.get('role') != 'admin':
+            return Response({'status':False,'message':'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
         inst=VendorModel.objects.get(pk=pk)
         password=request.data['Password']
         if password == 'null':
@@ -208,9 +230,12 @@ class RegisterUser(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self , request,pk, format=None):
-       
+        auth = request.META.get('HTTP_AUTHORIZATION', '')
+        my_token = tokenauth(auth[7:]) if auth.startswith('Bearer ') else False
+        if not my_token or my_token.get('role') != 'admin':
+            return Response({'status':False,'message':'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
         data=VendorModel.objects.get(pk=pk)
-             
+
         if data:
             data.delete()
             message = {'status':True,'message':'Account has been Deleted SuccessFully'}
@@ -220,7 +245,8 @@ class RegisterUser(APIView):
 
 
 # -----------------------Modal Sections start-----------------------
-class ModelView(APIView):
+class ModelView(RoleRequiredMixin, APIView):
+    required_role = 'admin'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
@@ -309,7 +335,8 @@ class ModelView(APIView):
         
 # -----------------------Modal Sections end-------------------------
 # -----------------------Loction Sections start-------------------------
-class LocationViews(APIView):
+class LocationViews(RoleRequiredMixin, APIView):
+    required_role = 'admin'
     # dddd
     def get(self,request):
         try:
@@ -366,13 +393,15 @@ class LocationViews(APIView):
                 data=ProductModel.objects.get(pk=pk)
               
                 
-                data.LocationTitle=request.data['LocationTitle']
+                data.ProductTitle=request.data['LocationTitle']
                 data.Lititude=request.data['Lititude']
                 data.Longitude=request.data['Longitude']
                 data.ContactNo=request.data['ContactNo']
                 data.Description=request.data['Description']
                 data.Address=request.data['Address']
                 data.WebsiteLink=request.data['WebsiteLink']
+                data.Price=request.data.get('Price', data.Price)
+                data.qty=request.data.get('qty', data.qty)
                 data.ModalId=DataModels.objects.get(pk=request.data['ModalId'])
                 data.UserId=VendorModel.objects.get(pk=11)
                 
@@ -414,7 +443,8 @@ class LocationViews(APIView):
 # -----------------------Loction Sections end-------------------------
 
 # -----------------------setting Sections start-------------------------
-class SettingsViews(APIView):
+class SettingsViews(RoleRequiredMixin, APIView):
+    required_role = 'admin'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
@@ -483,14 +513,15 @@ def tokenauth(tokencatch):
 # -------------------------------------------------
 
 class LoginAdmin(APIView):
+    throttle_scope = 'login'
     def post(self, request , format=None, *args, **kwargs):
         try:
             loginQuery=AdminModel.objects.get(Email=request.data['Email'])
-            request.session['userid']=loginQuery.pk
             if hash.verify(request.data['Password'],loginQuery.Password):
                 access_token_payload = {
                 'id': loginQuery.pk,
                 'fullname':loginQuery.FullName,
+                'role':'admin',
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                 'iat': datetime.datetime.utcnow(),
 
@@ -513,7 +544,8 @@ class LoginAdmin(APIView):
 
 
 #----------------------------------- Location status---------
-class AdminStatus(APIView):
+class AdminStatus(RoleRequiredMixin, APIView):
+    required_role = 'admin'
     def put(self, request, pk ,format=None):
        
         try:
@@ -553,7 +585,8 @@ class AdminStatus(APIView):
 
 # ------------------Agencys location Data start-------------
 # -----------------------Loction Sections start-------------------------
-class LocationUserViews(APIView):
+class LocationUserViews(RoleRequiredMixin, APIView):
+    required_role = 'vendor'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
@@ -609,13 +642,15 @@ class LocationUserViews(APIView):
                 data=ProductModel.objects.get(pk=pk)
               
                 
-                data.LocationTitle=request.data['LocationTitle']
+                data.ProductTitle=request.data['LocationTitle']
                 data.Lititude=request.data['Lititude']
                 data.Longitude=request.data['Longitude']
                 data.ContactNo=request.data['ContactNo']
                 data.Description=request.data['Description']
                 data.Address=request.data['Address']
                 data.WebsiteLink=request.data['WebsiteLink']
+                data.Price=request.data['Price']
+                data.qty=request.data['qty']
                 data.ModalId=DataModels.objects.get(pk=request.data['ModalId'])
                 data.UserId=VendorModel.objects.get(pk=my_token['id'])
                 
@@ -658,7 +693,8 @@ class LocationUserViews(APIView):
 # ------------------Agencys location Data end-------------
 
 # -----------------------setting Sections start-------------------------
-class AgencySettingsViews(APIView):
+class AgencySettingsViews(RoleRequiredMixin, APIView):
+    required_role = 'vendor'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
@@ -738,7 +774,7 @@ class NearLocations(APIView):
        
         for mydata in data:
             nearDistance=dist(lat,lon,mydata.Lititude,mydata.Longitude)
-            if nearDistance <=10:
+            if nearDistance <=25:
                 serData=ProductModelSer(mydata)
                 nearLocations.append(serData.data)
                 # print("location is ",json.dumps(nearDistance))
@@ -793,11 +829,11 @@ class UserRegister(APIView):
             responsemessage = {'status':True,'message':'Account has been Register SuccessFully'}
          
             subject="Please Verify Your Accounts"
-            id=serializer.data['UserId']
-            to=serializer.data['Email']
-            token=serializer.data['Token']
+            id=serializer.instance.UserId
+            to=serializer.instance.Email
+            token=serializer.instance.Token
             link=f"{BASE}/verify/{token}/{id}"
-            message=f"Hi, {serializer.data['FirstName']} Please Verify Your Account"
+            message=f"Hi, {serializer.instance.FirstName} Please Verify Your Account"
             emailverify(subject,to,link,message)
             return Response(responsemessage)
            
@@ -853,7 +889,7 @@ class VerifyClient(APIView):
     def post(self, request, format=None):
         data=UserModel.objects.get(pk=request.data['id'])
         if data.Token == request.data['token']:
-            data.Status='enable'
+            data.Status='active'
             data.Token="None"
             data.save()
             message = {'message':'Your Account has been Verify'}
@@ -864,12 +900,13 @@ class VerifyClient(APIView):
             
 
 class LoginUser(APIView):
+    throttle_scope = 'login'
     def get(self,request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
-            if my_token:
-                data=VendorModel.objects.get(pk=my_token['id'])
-                serData=VendorModelSer(data, many=False)
+            if my_token and my_token.get('role') == 'user':
+                data=UserModel.objects.get(pk=my_token['id'])
+                serData=UserModelSer(data, many=False)
                 return Response({'status':True,'data':serData.data})
             else:
                   return Response({'status':False,'message':'token is expire'})
@@ -884,6 +921,7 @@ class LoginUser(APIView):
                 access_token_payload = {
                 'id': loginQuery.pk,
                 'name':loginQuery.FirstName,
+                'role':'user',
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                 'iat': datetime.datetime.utcnow(),
 
@@ -905,7 +943,8 @@ class LoginUser(APIView):
 
 
 
-class OrderView(APIView):
+class OrderView(RoleRequiredMixin, APIView):
+    required_role = 'user'
     def get(self, request , id):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
@@ -922,48 +961,51 @@ class OrderView(APIView):
     def post(self,request,  format=None):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
-            print(request.data)
             if my_token:
-                
-                dataset={
-                'FirstName':request.data['FirstName'],
-                'LastName':request.data['LastName'],
-                'Email':request.data['Email'],
-                'ContactNo':request.data['ContactNo'],
-                'Address':request.data['Address'],
-                'Product':request.data['Product'],
-                'Price':float(request.data['Price']),
-                'Qty':int(request.data['Qty']),
-                'TotalPrice':float(request.data['TotalPrice']),
-                'User':my_token['id'],
+                qty = int(request.data['Qty'])
+                if qty < 1:
+                    return Response({'status':False,'message':'Quantity must be at least 1'})
 
-                }
-                
-       
-                serializer = OrderAddSer(data=dataset)
-                # print(dataset)
-                if serializer.is_valid():
+                # Lock the product row, validate stock, and decrement atomically so two
+                # concurrent orders can't oversell. Price/TotalPrice are recomputed on the
+                # server — the client-sent amounts are never trusted.
+                with transaction.atomic():
+                    product = ProductModel.objects.select_for_update().get(pk=request.data['Product'])
+                    if product.qty < qty:
+                        return Response({'status':False,'message':'Sorry, only %d item(s) left in stock' % product.qty})
+
+                    total_price = product.Price * qty
+                    dataset={
+                    'FirstName':request.data['FirstName'],
+                    'LastName':request.data['LastName'],
+                    'Email':request.data['Email'],
+                    'ContactNo':request.data['ContactNo'],
+                    'Address':request.data['Address'],
+                    'Product':product.pk,
+                    'Price':product.Price,
+                    'Qty':qty,
+                    'TotalPrice':total_price,
+                    'User':my_token['id'],
+                    }
+                    serializer = OrderAddSer(data=dataset)
+                    if not serializer.is_valid():
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                     serializer.save()
-                    data=serializer.validated_data['Product']
-                    print("the data about ser is",data.UserId.VendorId)
-                   
-                    channel=f"user{data.UserId.VendorId}"
-                    print("the channel is",channel)
+                    product.qty = product.qty - qty
+                    product.save()
+
+                channel=f"user{product.UserId.VendorId}"
+                try:
                     pusher_client.trigger(channel, 'my-event', {'message':"hello"})
-                    message = {'status':True,'message':'Your order has been Add Sucessfully. we will contact you soon'}
-                
-                    return Response(message)
-                else:
-                    print("the error is")
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-            
+                except Exception:
+                    pass
+                message = {'status':True,'message':'Your order has been Add Sucessfully. we will contact you soon'}
+                return Response(message)
 
             else:
                   return Response({'status':False,'message':'token is expire'})
 
         except Exception as e:
-            print("the e is",e)
             return Response({'status':False,'message':str(e)})
 
        
@@ -989,11 +1031,15 @@ class VendorOrders(APIView):
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
            
             if my_token:
+                if my_token.get('role') not in ('vendor', 'admin'):
+                    return Response({'status':False,'message':'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
                 if request.data['tab']=="locationstatus":
-                   
 
                     data = OrderModel.objects.get(pk=pk)
-                  
+                    # A vendor may only touch orders for their own products; admin may touch any.
+                    if my_token.get('role') == 'vendor' and data.Product.UserId.pk != my_token['id']:
+                        return Response({'status':False,'message':'You are not allowed to modify this order'}, status=status.HTTP_403_FORBIDDEN)
+
                     if data.Status !="Cancel":
                     
                         data.Status=request.data['status']
@@ -1064,7 +1110,10 @@ class VendorOrders(APIView):
 </html>
                             '''
                             
-                            notificationEmail(subject,data.Email,msg)
+                            try:
+                                notificationEmail(subject,data.Email,msg)
+                            except Exception:
+                                pass
                         elif data.Status =="Completed":
                             msg=f'''
                                 <html>
@@ -1122,16 +1171,25 @@ class VendorOrders(APIView):
 
 </html>
                             '''
-                            orderComplateEmail("Order Completed",data.Email,msg)
+                            try:
+                                orderComplateEmail("Order Completed",data.Email,msg)
+                            except Exception:
+                                pass
                       
                       
                         elif data.Status=="Cancel":
-                            subject=f"Order Id {data.pk} has been Cancel"
-                            message=f"Dear {data.FirstName} {data.LastName} your order {data.Product.ProductTitle} has been Cancel."
-                            notificationEmail(subject,data.Email,message)
-                            updateqty=ProductModel.objects.get(pk=data.Product.pk)
-                            updateqty.qty=updateqty.qty + data.Qty
-                            updateqty.save()
+                            # Restock first and atomically; do it before the (best-effort) email
+                            # so a mail failure can never lose the returned stock.
+                            with transaction.atomic():
+                                updateqty=ProductModel.objects.select_for_update().get(pk=data.Product.pk)
+                                updateqty.qty=updateqty.qty + data.Qty
+                                updateqty.save()
+                            try:
+                                subject=f"Order Id {data.pk} has been Cancel"
+                                message=f"Dear {data.FirstName} {data.LastName} your order {data.Product.ProductTitle} has been Cancel."
+                                notificationEmail(subject,data.Email,message)
+                            except Exception:
+                                pass
                       
                       
                         message = {'status':True,'message':'Status has been change Successfully'}
@@ -1150,7 +1208,8 @@ class VendorOrders(APIView):
             return Response({'status':False,'message':str(e)})
 
 
-class AdminOrders(APIView):
+class AdminOrders(RoleRequiredMixin, APIView):
+     required_role = 'admin'
      def get(self, request):
         try:
             my_token = tokenauth(request.META['HTTP_AUTHORIZATION'][7:])
